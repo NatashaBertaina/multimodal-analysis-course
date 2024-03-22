@@ -68,25 +68,19 @@ if not path:
     exit()
 # Format the extension to use it with glob
 extension = '*.' + ext
-# Initialize a counter to show a message during each loop
-i = 1
-if plot_flag:
-    # Create an empty figure or plot to save it
-    cm = 1/2.54  # centimeters in inches
-    #fig = plt.figure(figsize=(15*cm, 10*cm), dpi=300)
-    fig = plt.figure()
-    # Defining the axes so that we can plot data into it.
-    #ax = plt.axes()
-#Inits to generalize
 
-# Loop to walk the directory and sonify each data file
+# Create an empty figure or plot to save it
+fig = plt.figure()
+# Defining the axes so that we can plot data into it.
+ax = plt.axes()
+
+# Print time to see how much delay the files generation
 now = datetime.datetime.now()
 print(now.strftime('%Y-%m-%d_%H-%M-%S'))
 
 # Open each file
 data, status, msg = _dataimport.set_arrayfromfile(path, ext)
-
-# Convert into numpy, split in x and y and normalyze
+# Check if the import is correct
 if data.shape[1]<2:
     print("Error reading file 1, only detect one column.")
     exit()
@@ -96,92 +90,20 @@ data_float = data.iloc[1:, :].astype(float)
 x_pos_min = 1
 
 # Generate the plot if needed
-if plot_flag:
-    # Configure axis, plot the data and save it
-    # Erase the plot
-    #ax.cla()
-    # First file of the column is setted as axis name
-    #x_name = str(data1.iloc[0,0])
-    #ax.set_xlabel(x_name)
-    # Separate the name file from the path to set the plot title
-    #head, tail = os.path.split(filename)
-    
-    #Plot   
-    ax = plt.subplot()    #para un solo plot
-    ax.plot(data_float.loc[:,0], data_float.loc[:,1])
-    ax.tick_params('x', labelbottom=False)
-    
-    ax.legend()
-
-    plt.pause(0.05)
-    # Set the path to save the plot and save it
-    plot_path = path[:-4] + 'plot.png'
-    fig.savefig(plot_path)
+# First file of the column is setted as axis name
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+# Separate the name file from the path to set the plot title
+filename = os.path.basename(path)
+#Plot   
+ax.plot(data_float.loc[:,0], data_float.loc[:,1])
+# Set the path to save the plot and save it
+plot_path = path[:-4] + 'plot.png'
+fig.savefig(plot_path)
     
 # Reproduction
 # Normalize the data to sonify
 x1, y1, status = _math.normalize(data_float.loc[:,0], data_float.loc[:,1], init=x_pos_min)
-
-# Cut x axis
-minval = float(data_float.loc[:,1].min())
-maxval = float(data_float.loc[:,1].max())
-
-# To make reproduction on real time
-ordenada = np.array([minval,maxval])
-
-#input("Press Enter to continue...")
-
-#for i in range (1, 4):
-    #print(i)
-    #for x in range (x_pos_min, x_pos_max):
-        #if i==1:
-            # Plot the position line
-            #if not x == x_pos_min:
-                #line = red_line.pop(0)
-                #line.remove()
-            #abscisa = np.array([float(data_float1.loc[x,1]), float(data_float1.loc[x,1])])
-            #red_line = ax1.plot(abscisa, ordenada1, 'r')
-            #plt.pause(0.05)
-            # Make the sound
-            #_simplesound.reproductor.set_waveform('sine')
-            #_simplesound.make_sound(y1[x], 1)
-            #_simplesound.reproductor.set_waveform('flute')
-            #_simplesound.make_sound(y4[x], 1)
-            #if x == (x_pos_max-1):
-                #line = red_line.pop(0)
-                #line.remove()
-        #if i==2:
-            # Plot the position line
-            #if not x == x_pos_min:
-                #line = red_line.pop(0)
-                #line.remove()
-            #abscisa = np.array([float(data_float1.loc[x,1]), float(data_float1.loc[x,1])])
-            #red_line = ax2.plot(abscisa, ordenada2, 'r')
-            #plt.pause(0.05)
-            # Make the sound
-            #_simplesound.reproductor.set_waveform('sine')
-            #_simplesound.make_sound(y2[x], 1)
-            #_simplesound.reproductor.set_waveform('flute')
-            #_simplesound.make_sound(y4[x], 1)
-            #if x == (x_pos_max-1):
-                #line = red_line.pop(0)
-                #line.remove()
-        #if i==3:
-            # Plot the position line
-            #if not x == x_pos_min:
-                #line = red_line.pop(0)
-                #line.remove()
-            #abscisa = np.array([float(data_float1.loc[x,1]), float(data_float1.loc[x,1])])
-            #red_line = ax3.plot(abscisa, ordenada3, 'r')
-            #plt.pause(0.05)
-            # Make the sound
-            #_simplesound.reproductor.set_waveform('sine')
-            #_simplesound.make_sound(y3[x], 1)
-            #_simplesound.reproductor.set_waveform('flute')
-            #_simplesound.make_sound(y4[x], 1)
-            #if x == (x_pos_max-1):
-                #line = red_line.pop(0)
-                #line.remove()
 
 # Save sound
 wav_name = path[:-4] + '_sound.wav'
@@ -194,7 +116,3 @@ wav_to_mp3(wav_name, path_mp3)
 now = datetime.datetime.now()
 print(now.strftime('%Y-%m-%d_%H-%M-%S'))
 
-plt.pause(0.5)
-# Showing the above plot
-plt.show()
-plt.close()

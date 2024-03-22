@@ -1,3 +1,4 @@
 data/*.wav
+data/*.mp3
 data/*.png
 */__pycache__
