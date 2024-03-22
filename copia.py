@@ -17,6 +17,12 @@ import matplotlib.pyplot as plt
 import math
 import pandas as pd
 
+from pydub import AudioSegment
+
+def wav_to_mp3(wav_path, mp3_path):
+    sound_mp3 = AudioSegment.from_mp3(wav_path)
+    sound_mp3.export(mp3_path, format='wav')
+
 #Local import
 from data_transform import smooth
 from data_export.data_export import DataExport
@@ -181,6 +187,7 @@ ordenada = np.array([minval,maxval])
 wav_name = path[:-4] + '_sound.wav'
 x_pos_min = 1
 _simplesound.save_sound(wav_name, data_float.loc[:,0], y1, init=x_pos_min) 
+wav_to_mp3(path_wav, path_mp3)
 
 # Print time
 now = datetime.datetime.now()
