@@ -96,7 +96,7 @@ ax.set_ylabel('y')
 # Separate the name file from the path to set the plot title
 filename = os.path.basename(path)
 #Plot   
-ax.plot(data_float.loc[:,0], data_float.loc[:,1])
+ax.plot(data_float.loc[:,0], data_float.loc[:,1], 'b', linewidth=3)
 # Set the path to save the plot and save it
 plot_path = path[:-4] + 'plot.png'
 fig.savefig(plot_path)
