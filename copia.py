@@ -185,9 +185,10 @@ ordenada = np.array([minval,maxval])
 
 # Save sound
 wav_name = path[:-4] + '_sound.wav'
+path_mp3 = path[:-4] + '_sound.mp3'
 x_pos_min = 1
 _simplesound.save_sound(wav_name, data_float.loc[:,0], y1, init=x_pos_min) 
-wav_to_mp3(path_wav, path_mp3)
+wav_to_mp3(wav_name, path_mp3)
 
 # Print time
 now = datetime.datetime.now()
