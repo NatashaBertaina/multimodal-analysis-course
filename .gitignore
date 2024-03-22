@@ -1,0 +1,3 @@
+data/*.wav
+data/*.png
+*/__pycache__
