@@ -2,7 +2,7 @@
 """
 Created on Wed Jan 24 08:30:39 2024
 
-@author: JMCasado
+@author: JMCasado; NBertaina (poné aquí el nombre como más te guste '=)')
 """
 
 #General import
@@ -58,7 +58,7 @@ parser.add_argument("-p", "--save-plot", type=bool,
 # Alocate the arguments in variables, if extension is empty, select txt as
 # default
 args = parser.parse_args()
-ext = args.file_type or 'csv'
+ext = args.file_type or 'txt'
 path = args.directory
 plot_flag = args.save_plot or True
 
@@ -97,6 +97,9 @@ ax.set_ylabel('y')
 filename = os.path.basename(path)
 #Plot   
 ax.plot(data_float.loc[:,0], data_float.loc[:,1], 'b', linewidth=3)
+#Genera los ejes en cero de color negro
+ax.axhline(y=0, color='k')
+ax.axvline(x=0, color='k')
 # Set the path to save the plot and save it
 plot_path = path[:-4] + 'plot.png'
 fig.savefig(plot_path)
