@@ -148,8 +148,3 @@ wav_to_mp3(wav_name, path_mp3)
 
 now = datetime.datetime.now()
 print(now.strftime('%Y-%m-%d_%H-%M-%S'))
-
-plt.pause(0.5)
-# Showing the above plot
-plt.show()
-plt.close()

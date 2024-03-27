@@ -55,6 +55,7 @@ parser.add_argument("-d", "--directory", type=str,
 parser.add_argument("-p", "--save-plot", type=bool,
                     help="Indicate if you want to save the plot (False as default)",
                     choices=[False,True])
+
 # Alocate the arguments in variables, if extension is empty, select txt as
 # default
 args = parser.parse_args()
