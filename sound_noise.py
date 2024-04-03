@@ -2,7 +2,7 @@
 """
 Created on Wed Jan 24 08:30:39 2024
 
-@author: JMCasado
+@author: JMCasado; NBertaina
 """
 
 #General import
@@ -104,7 +104,7 @@ ax.set_ylabel('y')
 # Separate the name file from the path to set the plot title
 filename = os.path.basename(path)
 #Plot 
-ax.plot(data_float.loc[:, 0], data_float.loc[:, 1], 'b', linewidth=3)
+ax.plot(data_float.loc[:, 0], data_float.loc[:, 1], '#2874a6', linewidth=3)
 ax.axhline(y=0, color='k', linewidth=1)
 ax.axvline(x=0, color='k', linewidth=1)
 # Set the path to save the plot and save it
@@ -134,10 +134,11 @@ wav_to_mp3(wav_name_noise, path_mp3_noise)
 # Generate image of sound with noise
 fig_noise = plt.figure()
 ax_noise = plt.axes()
-ax_noise.plot(data_float.loc[:, 0], y1_noise, 'r', linewidth=3)
+ax_noise.plot(data_float.loc[:, 0], y1_noise, '#f39c12', linewidth=3)
 ax_noise.set_xlabel('x')
 ax_noise.set_ylabel('y')
 ax_noise.axhline(y=0, color='k', linewidth=1)
 ax_noise.axvline(x=0, color='k', linewidth=1)
 image_name = path[:-4] + 'plot_noise.png'
 fig_noise.savefig(image_name)
+
