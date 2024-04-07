@@ -157,7 +157,11 @@ if data_float.loc[x_pos_max,0] < 0:
         caract_resta[0].append(i)
     xfinal_text = caract_resta
 xfinal_text = brl.toUnicodeSymbols(xfinal_text, flatten=True)
-axbraille.set_xticks([data_float.loc[x_pos_min,0],data_float.loc[x_pos_middle,0],data_float.loc[x_pos_max,0]], [xinicio_text,xmedio_text,xfinal_text], fontsize=24)
+axbraille.set_xticks([data_float.loc[x_pos_min,0],data_float.loc[x_pos_middle,0],data_float.loc[x_pos_max,0]], 
+                     [xinicio_text,xmedio_text,xfinal_text], 
+                     fontsize=24,
+                     fontfamily='serif',
+                     fontweight='bold')
 # 3 valores de eje y en braille
 # Found min, middle, max possitions and values
 abs_val_array = np.abs(data_float.loc[:,1] - data_float.loc[:,1].min())
@@ -192,15 +196,19 @@ if data_float.loc[y_pos_max,1] < 0:
         caract_resta[0].append(i)
     y_pos_max_text = caract_resta
 y_pos_max_text = brl.toUnicodeSymbols(y_pos_max_text, flatten=True)
-axbraille.set_yticks([data_float.loc[y_pos_min,1],data_float.loc[y_pos_middle,1],data_float.loc[y_pos_max,1]], [y_pos_min_text,y_pos_middle_text,y_pos_max_text], fontsize=24)
+axbraille.set_yticks([data_float.loc[y_pos_min,1],data_float.loc[y_pos_middle,1],data_float.loc[y_pos_max,1]], 
+                     [y_pos_min_text,y_pos_middle_text,y_pos_max_text], 
+                     fontsize=24,
+                     fontfamily='serif',
+                     fontweight='bold')
 
 axbraille.set_title(' ')
 x = brl.translate('x')
 x = brl.toUnicodeSymbols(x, flatten=True)
-axbraille.set_xlabel(x, fontsize=24, labelpad=10)
+axbraille.set_xlabel(x, fontsize=24, fontfamily='serif', fontweight='bold', labelpad=10)
 y = brl.translate('y')
 y = brl.toUnicodeSymbols(y, flatten=True)
-axbraille.set_ylabel(y, fontsize=24, labelpad=10, rotation=0)
+axbraille.set_ylabel(y, fontsize=24, fontfamily='serif', fontweight='bold', labelpad=10, rotation=0)
 axbraille.plot(data_float.loc[:, 0], data_float.loc[:, 1], '#2874a6', linewidth=3)
 # Ejes de coordenadas
 if data_float.loc[:, 0].min() < 0:
