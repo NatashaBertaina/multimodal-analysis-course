@@ -105,8 +105,8 @@ ax.set_ylabel('y')
 filename = os.path.basename(path)
 #Plot 
 ax.plot(data_float.loc[:, 0], data_float.loc[:, 1], 'b', linewidth=3)
-ax.axhline(y=0, color='k', linewidth=1)
-ax.axvline(x=0, color='k', linewidth=1)
+#ax.axhline(y=0, color='k', linewidth=1)
+#ax.axvline(x=0, color='k', linewidth=1)
 # Set the path to save the plot and save it
 plot_path = path[:-4] + 'plot.png'
 fig.savefig(plot_path)
@@ -137,8 +137,8 @@ ax_noise = plt.axes()
 ax_noise.plot(data_float.loc[:, 0], y1_noise, 'r', linewidth=3)
 ax_noise.set_xlabel('x')
 ax_noise.set_ylabel('y')
-ax_noise.axhline(y=0, color='k', linewidth=1)
-ax_noise.axvline(x=0, color='k', linewidth=1)
+#ax_noise.axhline(y=0, color='k', linewidth=1)
+#ax_noise.axvline(x=0, color='k', linewidth=1)
 image_name = path[:-4] + 'plot_noise.png'
 fig_noise.savefig(image_name)
 
