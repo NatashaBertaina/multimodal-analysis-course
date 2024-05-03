@@ -217,10 +217,9 @@ if data_float.loc[:, 0].min() < 0 and data_float.loc[:, 0].max() > 0:
 if data_float.loc[:, 1].min() < 0 and data_float.loc[:, 1].max() > 0:
     axbraille.axhline(y=0, color='k', linewidth=1)
 # Legend
-#axbraille.legend('I', loc=(1,1), markerscale=0, markerfirst=False, edgecolor='black')
-axbraille.text(data_float.loc[:, 0].max()*1.1, data_float.loc[:, 1].max()*1.1, "I", size=24, va="bottom", ha="left", rotation=0,
-        bbox=dict(boxstyle="square,pad=0.3",
-                      fc="white", ec="black", lw=2))
+#axbraille.text(data_float.loc[:, 0].max()*1.1, data_float.loc[:, 1].max()*1.1, "I", size=24, va="bottom", ha="left", rotation=0,
+ #       bbox=dict(boxstyle="square,pad=0.3",
+  #                    fc="white", ec="black", lw=2))
 # Resize
 figbraille.tight_layout()
 # Save braille figure
