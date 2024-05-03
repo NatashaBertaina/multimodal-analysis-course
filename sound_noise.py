@@ -161,7 +161,8 @@ axbraille.set_xticks([data_float.loc[x_pos_min,0],data_float.loc[x_pos_middle,0]
                      [xinicio_text,xmedio_text,xfinal_text], 
                      fontsize=24,
                      fontfamily='serif',
-                     fontweight='bold')
+                     fontweight='bold',
+                     position=(0,-0.04))
 # 3 valores de eje y en braille
 # Found min, middle, max possitions and values
 abs_val_array = np.abs(data_float.loc[:,1] - data_float.loc[:,1].min())
@@ -205,16 +206,21 @@ axbraille.set_yticks([data_float.loc[y_pos_min,1],data_float.loc[y_pos_middle,1]
 axbraille.set_title(' ')
 x = brl.translate('x')
 x = brl.toUnicodeSymbols(x, flatten=True)
-axbraille.set_xlabel(x, fontsize=24, fontfamily='serif', fontweight='bold', labelpad=10)
+axbraille.set_xlabel(x, fontsize=24, fontfamily='serif', fontweight='bold', labelpad=15)
 y = brl.translate('y')
 y = brl.toUnicodeSymbols(y, flatten=True)
 axbraille.set_ylabel(y, fontsize=24, fontfamily='serif', fontweight='bold', labelpad=10, rotation=0)
 axbraille.plot(data_float.loc[:, 0], data_float.loc[:, 1], '#2874a6', linewidth=3)
 # Ejes de coordenadas
-if data_float.loc[:, 0].min() < 0:
+if data_float.loc[:, 0].min() < 0 and data_float.loc[:, 0].max() > 0:
     axbraille.axvline(x=0, color='k', linewidth=1)
-if data_float.loc[:, 1].min() < 0:
+if data_float.loc[:, 1].min() < 0 and data_float.loc[:, 1].max() > 0:
     axbraille.axhline(y=0, color='k', linewidth=1)
+# Legend
+#axbraille.legend('I', loc=(1,1), markerscale=0, markerfirst=False, edgecolor='black')
+axbraille.text(data_float.loc[:, 0].max()*1.1, data_float.loc[:, 1].max()*1.1, "I", size=24, va="bottom", ha="left", rotation=0,
+        bbox=dict(boxstyle="square,pad=0.3",
+                      fc="white", ec="black", lw=2))
 # Resize
 figbraille.tight_layout()
 # Save braille figure
