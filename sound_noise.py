@@ -87,6 +87,233 @@ def generate_gaussian_noise(length, snr):
     noise_var= 1 / signal_power
     return np.random.normal(0, np.sqrt(noise_var), length)
 
+def generate_plot_space(brailleweight=500):
+    # Plot without data (cuad1)
+    # Generate the blank plot
+    figblank = plt.figure()
+    axblank = plt.axes()
+    axblank.set_title(' ')
+    x = brl.translate('x')
+    x = brl.toUnicodeSymbols(x, flatten=True)
+    axblank.set_xlabel(' ', fontsize=24, fontfamily='serif', fontweight=brailleweight, labelpad=15)
+    y = brl.translate('y')
+    y = brl.toUnicodeSymbols(y, flatten=True)
+    axblank.set_ylabel(' ', fontsize=24, fontfamily='serif', fontweight=brailleweight, labelpad=10, rotation=0)
+    # Setting ticks
+    num0 = brl.translate('0')
+    num0 = brl.toUnicodeSymbols(num0, flatten=True)
+    num25 = brl.translate('25')
+    num25 = brl.toUnicodeSymbols(num25, flatten=True)
+    num50 = brl.translate('50')
+    num50 = brl.toUnicodeSymbols(num50, flatten=True)
+    axblank.set_xticks([0,25,50], 
+                        [' ',' ',' '], 
+                        fontsize=24,
+                        fontfamily='serif',
+                        fontweight=brailleweight,
+                        position=(0,-0.04))
+    axblank.set_yticks([0,25,50], 
+                        [' ',' ',' '], 
+                        fontsize=24,
+                        fontfamily='serif',
+                        fontweight=brailleweight)
+    # Resize
+    figblank.tight_layout()
+    # Save braille figure
+    blankplot_path = path[:-4] + 'plot-blank1.png'
+    figblank.savefig(blankplot_path)
+    plt.close()
+
+    # Plot without data (cuad all)
+    # Generate the blank plot
+    figblank_all = plt.figure()
+    axblank_all = plt.axes()
+    axblank_all.set_title(' ')
+    x = brl.translate('x')
+    x = brl.toUnicodeSymbols(x, flatten=True)
+    axblank_all.set_xlabel(x, fontsize=24, fontfamily='serif', fontweight=brailleweight, labelpad=15)
+    y = brl.translate('y')
+    y = brl.toUnicodeSymbols(y, flatten=True)
+    axblank_all.set_ylabel(y, fontsize=24, fontfamily='serif', fontweight=brailleweight, labelpad=10, rotation=0)
+    # Setting ticks
+    num_50 = brl.translate('50')
+    caract_resta = [['001001']]
+    for i in num_50[0]:
+        caract_resta[0].append(i)
+    num_50 = caract_resta
+    num_50 = brl.toUnicodeSymbols(num_50, flatten=True)
+    num0 = brl.translate('0')
+    num0 = brl.toUnicodeSymbols(num0, flatten=True)
+    num50 = brl.translate('50')
+    num50 = brl.toUnicodeSymbols(num50, flatten=True)
+    axblank_all.set_xticks([-50,0,50], 
+                        [num_50,num0,num50], 
+                        fontsize=24,
+                        fontfamily='serif',
+                        fontweight=brailleweight,
+                        position=(0,-0.04))
+    axblank_all.set_yticks([-50,0,50], 
+                        [num_50,num0,num50], 
+                        fontsize=24,
+                        fontfamily='serif',
+                        fontweight=brailleweight)
+    # Setting limits
+    axblank_all.set_xlim(-55,55)
+    axblank_all.set_ylim(-55,55)
+    # Axis
+    axblank_all.axvline(x=0, color='k', linewidth=1)
+    axblank_all.axhline(y=0, color='k', linewidth=1)
+    # Legend I
+    mayus = [['000101']]
+    legend1 = brl.translate('i')
+    for i in legend1[0]:
+        mayus[0].append(i)
+    legend1 = brl.toUnicodeSymbols(mayus, flatten=True)
+    axblank_all.text(15, 20, legend1, size=24, fontfamily='serif', fontweight=brailleweight, va="bottom", ha="left", rotation=0)
+    #Legend II
+    mayus = [['000101']]
+    legend2 = brl.translate('ii')
+    for i in legend2[0]:
+        mayus[0].append(i)
+    legend2 = brl.toUnicodeSymbols(mayus, flatten=True)
+    axblank_all.text(-35, 20, legend2, size=24, fontfamily='serif', fontweight=brailleweight, va="bottom", ha="left", rotation=0)
+    #Legend III
+    mayus = [['000101']]
+    legend3 = brl.translate('iii')
+    for i in legend3[0]:
+        mayus[0].append(i)
+    legend3 = brl.toUnicodeSymbols(mayus, flatten=True)
+    axblank_all.text(-40, -30, legend3, size=24, fontfamily='serif', fontweight=brailleweight, va="bottom", ha="left", rotation=0)
+    #Legend II
+    mayus = [['000101']]
+    legend4 = brl.translate('iv')
+    for i in legend4[0]:
+        mayus[0].append(i)
+    legend4 = brl.toUnicodeSymbols(mayus, flatten=True)
+    axblank_all.text(15, -30, legend4, size=24, fontfamily='serif', fontweight=brailleweight, va="bottom", ha="left", rotation=0)
+    # Resize
+    figblank_all.tight_layout()
+    # Save braille figure
+    blankplot_path = path[:-4] + 'plot-blank-all.png'
+    figblank_all.savefig(blankplot_path)
+    plt.close()
+
+# Check and display the type of the variable
+def check_and_display_type(variable):
+    if isinstance(variable, list):
+        print(f"The variable is a Python list")
+    elif isinstance(variable, np.ndarray):
+        print(f"The variable is a NumPy array")
+    elif isinstance(variable, pd.Series):
+        print(f"The variable is a Pandas Series")
+    elif isinstance(variable,pd.DataFrame):
+        print(f"The variable is a Pandas DataFrame")
+    else:
+        print("The variable is not a recognized type.")
+
+def generate_braille_plot(dataframe, brailleweight=500):
+    # Generate the braille plot
+    figbraille = plt.figure()
+    axbraille = plt.axes()
+    # 3 valores de eje x en braille
+    abs_val_array = np.abs(dataframe.loc[:,0] - dataframe.loc[:,0].min())
+    x_pos_min = abs_val_array.idxmin()
+    middle = ((dataframe.loc[:,0].max() - dataframe.loc[:,0].min())/2) + dataframe.loc[:,0].min()
+    abs_val_array = np.abs(dataframe.loc[:,0] - middle)
+    x_pos_middle = abs_val_array.idxmin()
+    abs_val_array = np.abs(dataframe.loc[:,0] - dataframe.loc[:,0].max())
+    x_pos_max = abs_val_array.idxmin()
+
+    xinicio_text = str(int(dataframe.loc[x_pos_min,0]))
+    xinicio_text = brl.translate(xinicio_text)
+    if dataframe.loc[x_pos_min,0] < 0:
+        caract_resta = [['001001']]
+        for i in xinicio_text[0]:
+            caract_resta[0].append(i)
+        xinicio_text = caract_resta
+    xinicio_text = brl.toUnicodeSymbols(xinicio_text, flatten=True)
+    xmedio_text = str(int(dataframe.loc[x_pos_middle,0]))
+    xmedio_text = brl.translate(xmedio_text)
+    if dataframe.loc[x_pos_middle,0] < 0:
+        caract_resta = [['001001']]
+        for i in xmedio_text[0]:
+            caract_resta[0].append(i)
+        xmedio_text = caract_resta
+    xmedio_text = brl.toUnicodeSymbols(xmedio_text, flatten=True)
+    xfinal_text = str(int(dataframe.loc[x_pos_max,0]))
+    xfinal_text = brl.translate(xfinal_text)
+    if dataframe.loc[x_pos_max,0] < 0:
+        caract_resta = [['001001']]
+        for i in xfinal_text[0]:
+            caract_resta[0].append(i)
+        xfinal_text = caract_resta
+    xfinal_text = brl.toUnicodeSymbols(xfinal_text, flatten=True)
+    axbraille.set_xticks([dataframe.loc[x_pos_min,0],dataframe.loc[x_pos_middle,0],dataframe.loc[x_pos_max,0]], 
+                        [xinicio_text,xmedio_text,xfinal_text], 
+                        fontsize=24,
+                        fontfamily='serif',
+                        fontweight=brailleweight,
+                        position=(0,-0.04))
+    # 3 valores de eje y en braille
+    # Found min, middle, max possitions and values
+    abs_val_array = np.abs(dataframe.loc[:,1] - dataframe.loc[:,1].min())
+    y_pos_min = abs_val_array.idxmin()
+    middle = ((dataframe.loc[:,1].max() - dataframe.loc[:,1].min())/2) + dataframe.loc[:,1].min()
+    abs_val_array = np.abs(dataframe.loc[:,1] - middle)
+    y_pos_middle = abs_val_array.idxmin()
+    abs_val_array = np.abs(dataframe.loc[:,1] - dataframe.loc[:,1].max())
+    y_pos_max = abs_val_array.idxmin()
+
+    y_pos_min_text = str(int(dataframe.loc[y_pos_min,1]))
+    y_pos_min_text = brl.translate(y_pos_min_text)
+    if dataframe.loc[y_pos_min,1] < 0:
+        caract_resta = [['001001']]
+        for i in y_pos_min_text[0]:
+            caract_resta[0].append(i)
+        y_pos_min_text = caract_resta
+    y_pos_min_text = brl.toUnicodeSymbols(y_pos_min_text, flatten=True)
+    y_pos_middle_text = str(int(dataframe.loc[y_pos_middle,1]))
+    y_pos_middle_text = brl.translate(y_pos_middle_text)
+    if dataframe.loc[y_pos_middle,1] < 0:
+        caract_resta = [['001001']]
+        for i in y_pos_middle_text[0]:
+            caract_resta[0].append(i)
+        y_pos_middle_text = caract_resta
+    y_pos_middle_text = brl.toUnicodeSymbols(y_pos_middle_text, flatten=True)
+    y_pos_max_text = str(int(dataframe.loc[y_pos_max,1]))
+    y_pos_max_text = brl.translate(y_pos_max_text)
+    if dataframe.loc[y_pos_max,1] < 0:
+        caract_resta = [['001001']]
+        for i in y_pos_max_text[0]:
+            caract_resta[0].append(i)
+        y_pos_max_text = caract_resta
+    y_pos_max_text = brl.toUnicodeSymbols(y_pos_max_text, flatten=True)
+    axbraille.set_yticks([dataframe.loc[y_pos_min,1],dataframe.loc[y_pos_middle,1],dataframe.loc[y_pos_max,1]], 
+                        [y_pos_min_text,y_pos_middle_text,y_pos_max_text], 
+                        fontsize=24,
+                        fontfamily='serif',
+                        fontweight=brailleweight)
+
+    axbraille.set_title(' ')
+    x = brl.translate('x')
+    x = brl.toUnicodeSymbols(x, flatten=True)
+    axbraille.set_xlabel(x, fontsize=24, fontfamily='serif', fontweight=brailleweight, labelpad=15)
+    y = brl.translate('y')
+    y = brl.toUnicodeSymbols(y, flatten=True)
+    axbraille.set_ylabel(y, fontsize=24, fontfamily='serif', fontweight=brailleweight, labelpad=10, rotation=0)
+    axbraille.plot(dataframe.loc[:, 0], dataframe.loc[:, 1], '#2874a6', linewidth=3)
+    # Ejes de coordenadas
+    if dataframe.loc[:, 0].min() < 0 and dataframe.loc[:, 0].max() > 0:
+        axbraille.axvline(x=0, color='k', linewidth=1)
+    if dataframe.loc[:, 1].min() < 0 and dataframe.loc[:, 1].max() > 0:
+        axbraille.axhline(y=0, color='k', linewidth=1)
+    # Resize
+    figbraille.tight_layout()
+    # Save braille figure
+    brailleplot_path = path[:-4] + 'plot-braille.png'
+    figbraille.savefig(brailleplot_path)
+    plt.close()
+
 # Create an empty figure or plot to save it
 fig = plt.figure()
 # Defining the axes so that we can plot data into it.
@@ -119,220 +346,7 @@ plot_path = path[:-4] + 'plot.png'
 fig.savefig(plot_path)
 plt.close()
 
-# Generate the braille plot
-figbraille = plt.figure()
-axbraille = plt.axes()
-# Var para fontweight
-brailleweight = 500
-# 3 valores de eje x en braille
-
-abs_val_array = np.abs(data_float.loc[:,0] - data_float.loc[:,0].min())
-x_pos_min = abs_val_array.idxmin()
-middle = ((data_float.loc[:,0].max() - data_float.loc[:,0].min())/2) + data_float.loc[:,0].min()
-abs_val_array = np.abs(data_float.loc[:,0] - middle)
-x_pos_middle = abs_val_array.idxmin()
-abs_val_array = np.abs(data_float.loc[:,0] - data_float.loc[:,0].max())
-x_pos_max = abs_val_array.idxmin()
-
-xinicio_text = str(int(data_float.loc[x_pos_min,0]))
-xinicio_text = brl.translate(xinicio_text)
-if data_float.loc[x_pos_min,0] < 0:
-    caract_resta = [['001001']]
-    for i in xinicio_text[0]:
-        caract_resta[0].append(i)
-    xinicio_text = caract_resta
-xinicio_text = brl.toUnicodeSymbols(xinicio_text, flatten=True)
-xmedio_text = str(int(data_float.loc[x_pos_middle,0]))
-xmedio_text = brl.translate(xmedio_text)
-if data_float.loc[x_pos_middle,0] < 0:
-    caract_resta = [['001001']]
-    for i in xmedio_text[0]:
-        caract_resta[0].append(i)
-    xmedio_text = caract_resta
-xmedio_text = brl.toUnicodeSymbols(xmedio_text, flatten=True)
-xfinal_text = str(int(data_float.loc[x_pos_max,0]))
-xfinal_text = brl.translate(xfinal_text)
-if data_float.loc[x_pos_max,0] < 0:
-    caract_resta = [['001001']]
-    for i in xfinal_text[0]:
-        caract_resta[0].append(i)
-    xfinal_text = caract_resta
-xfinal_text = brl.toUnicodeSymbols(xfinal_text, flatten=True)
-axbraille.set_xticks([data_float.loc[x_pos_min,0],data_float.loc[x_pos_middle,0],data_float.loc[x_pos_max,0]], 
-                     [xinicio_text,xmedio_text,xfinal_text], 
-                     fontsize=24,
-                     fontfamily='serif',
-                     fontweight=brailleweight,
-                     position=(0,-0.04))
-# 3 valores de eje y en braille
-# Found min, middle, max possitions and values
-abs_val_array = np.abs(data_float.loc[:,1] - data_float.loc[:,1].min())
-y_pos_min = abs_val_array.idxmin()
-middle = ((data_float.loc[:,1].max() - data_float.loc[:,1].min())/2) + data_float.loc[:,1].min()
-abs_val_array = np.abs(data_float.loc[:,1] - middle)
-y_pos_middle = abs_val_array.idxmin()
-abs_val_array = np.abs(data_float.loc[:,1] - data_float.loc[:,1].max())
-y_pos_max = abs_val_array.idxmin()
-
-y_pos_min_text = str(int(data_float.loc[y_pos_min,1]))
-y_pos_min_text = brl.translate(y_pos_min_text)
-if data_float.loc[y_pos_min,1] < 0:
-    caract_resta = [['001001']]
-    for i in y_pos_min_text[0]:
-        caract_resta[0].append(i)
-    y_pos_min_text = caract_resta
-y_pos_min_text = brl.toUnicodeSymbols(y_pos_min_text, flatten=True)
-y_pos_middle_text = str(int(data_float.loc[y_pos_middle,1]))
-y_pos_middle_text = brl.translate(y_pos_middle_text)
-if data_float.loc[y_pos_middle,1] < 0:
-    caract_resta = [['001001']]
-    for i in y_pos_middle_text[0]:
-        caract_resta[0].append(i)
-    y_pos_middle_text = caract_resta
-y_pos_middle_text = brl.toUnicodeSymbols(y_pos_middle_text, flatten=True)
-y_pos_max_text = str(int(data_float.loc[y_pos_max,1]))
-y_pos_max_text = brl.translate(y_pos_max_text)
-if data_float.loc[y_pos_max,1] < 0:
-    caract_resta = [['001001']]
-    for i in y_pos_max_text[0]:
-        caract_resta[0].append(i)
-    y_pos_max_text = caract_resta
-y_pos_max_text = brl.toUnicodeSymbols(y_pos_max_text, flatten=True)
-axbraille.set_yticks([data_float.loc[y_pos_min,1],data_float.loc[y_pos_middle,1],data_float.loc[y_pos_max,1]], 
-                     [y_pos_min_text,y_pos_middle_text,y_pos_max_text], 
-                     fontsize=24,
-                     fontfamily='serif',
-                     fontweight=brailleweight)
-
-axbraille.set_title(' ')
-x = brl.translate('x')
-x = brl.toUnicodeSymbols(x, flatten=True)
-axbraille.set_xlabel(x, fontsize=24, fontfamily='serif', fontweight=brailleweight, labelpad=15)
-y = brl.translate('y')
-y = brl.toUnicodeSymbols(y, flatten=True)
-axbraille.set_ylabel(y, fontsize=24, fontfamily='serif', fontweight=brailleweight, labelpad=10, rotation=0)
-axbraille.plot(data_float.loc[:, 0], data_float.loc[:, 1], '#2874a6', linewidth=3)
-# Ejes de coordenadas
-if data_float.loc[:, 0].min() < 0 and data_float.loc[:, 0].max() > 0:
-    axbraille.axvline(x=0, color='k', linewidth=1)
-if data_float.loc[:, 1].min() < 0 and data_float.loc[:, 1].max() > 0:
-    axbraille.axhline(y=0, color='k', linewidth=1)
-# Resize
-figbraille.tight_layout()
-# Save braille figure
-brailleplot_path = path[:-4] + 'plot-braille.png'
-figbraille.savefig(brailleplot_path)
-plt.close()
-
-# Plot without data (cuad1)
-# Generate the blank plot
-figblank = plt.figure()
-axblank = plt.axes()
-axblank.set_title(' ')
-x = brl.translate('x')
-x = brl.toUnicodeSymbols(x, flatten=True)
-axblank.set_xlabel(' ', fontsize=24, fontfamily='serif', fontweight=brailleweight, labelpad=15)
-y = brl.translate('y')
-y = brl.toUnicodeSymbols(y, flatten=True)
-axblank.set_ylabel(' ', fontsize=24, fontfamily='serif', fontweight=brailleweight, labelpad=10, rotation=0)
-# Setting ticks
-num0 = brl.translate('0')
-num0 = brl.toUnicodeSymbols(num0, flatten=True)
-num25 = brl.translate('25')
-num25 = brl.toUnicodeSymbols(num25, flatten=True)
-num50 = brl.translate('50')
-num50 = brl.toUnicodeSymbols(num50, flatten=True)
-axblank.set_xticks([0,25,50], 
-                     [' ',' ',' '], 
-                     fontsize=24,
-                     fontfamily='serif',
-                     fontweight=brailleweight,
-                     position=(0,-0.04))
-axblank.set_yticks([0,25,50], 
-                     [' ',' ',' '], 
-                     fontsize=24,
-                     fontfamily='serif',
-                     fontweight=brailleweight)
-# Resize
-figblank.tight_layout()
-# Save braille figure
-blankplot_path = path[:-4] + 'plot-blank1.png'
-figblank.savefig(blankplot_path)
-plt.close()
-
-# Plot without data (cuad all)
-# Generate the blank plot
-figblank_all = plt.figure()
-axblank_all = plt.axes()
-axblank_all.set_title(' ')
-x = brl.translate('x')
-x = brl.toUnicodeSymbols(x, flatten=True)
-axblank_all.set_xlabel(x, fontsize=24, fontfamily='serif', fontweight=brailleweight, labelpad=15)
-y = brl.translate('y')
-y = brl.toUnicodeSymbols(y, flatten=True)
-axblank_all.set_ylabel(y, fontsize=24, fontfamily='serif', fontweight=brailleweight, labelpad=10, rotation=0)
-# Setting ticks
-num_50 = brl.translate('50')
-caract_resta = [['001001']]
-for i in num_50[0]:
-    caract_resta[0].append(i)
-num_50 = caract_resta
-num_50 = brl.toUnicodeSymbols(num_50, flatten=True)
-num0 = brl.translate('0')
-num0 = brl.toUnicodeSymbols(num0, flatten=True)
-num50 = brl.translate('50')
-num50 = brl.toUnicodeSymbols(num50, flatten=True)
-axblank_all.set_xticks([-50,0,50], 
-                     [num_50,num0,num50], 
-                     fontsize=24,
-                     fontfamily='serif',
-                     fontweight=brailleweight,
-                     position=(0,-0.04))
-axblank_all.set_yticks([-50,0,50], 
-                     [num_50,num0,num50], 
-                     fontsize=24,
-                     fontfamily='serif',
-                     fontweight=brailleweight)
-# Setting limits
-axblank_all.set_xlim(-55,55)
-axblank_all.set_ylim(-55,55)
-# Axis
-axblank_all.axvline(x=0, color='k', linewidth=1)
-axblank_all.axhline(y=0, color='k', linewidth=1)
-# Legend I
-mayus = [['000101']]
-legend1 = brl.translate('i')
-for i in legend1[0]:
-    mayus[0].append(i)
-legend1 = brl.toUnicodeSymbols(mayus, flatten=True)
-axblank_all.text(15, 20, legend1, size=24, fontfamily='serif', fontweight=brailleweight, va="bottom", ha="left", rotation=0)
-#Legend II
-mayus = [['000101']]
-legend2 = brl.translate('ii')
-for i in legend2[0]:
-    mayus[0].append(i)
-legend2 = brl.toUnicodeSymbols(mayus, flatten=True)
-axblank_all.text(-35, 20, legend2, size=24, fontfamily='serif', fontweight=brailleweight, va="bottom", ha="left", rotation=0)
-#Legend III
-mayus = [['000101']]
-legend3 = brl.translate('iii')
-for i in legend3[0]:
-    mayus[0].append(i)
-legend3 = brl.toUnicodeSymbols(mayus, flatten=True)
-axblank_all.text(-40, -30, legend3, size=24, fontfamily='serif', fontweight=brailleweight, va="bottom", ha="left", rotation=0)
-#Legend II
-mayus = [['000101']]
-legend4 = brl.translate('iv')
-for i in legend4[0]:
-    mayus[0].append(i)
-legend4 = brl.toUnicodeSymbols(mayus, flatten=True)
-axblank_all.text(15, -30, legend4, size=24, fontfamily='serif', fontweight=brailleweight, va="bottom", ha="left", rotation=0)
-# Resize
-figblank_all.tight_layout()
-# Save braille figure
-blankplot_path = path[:-4] + 'plot-blank-all.png'
-figblank_all.savefig(blankplot_path)
-plt.close()
+generate_braille_plot(data_float)
 
 # Reproduction
 # Normalize the data to sonify
@@ -347,6 +361,12 @@ wav_to_mp3(wav_name, path_mp3)
 
 # Generate sound with Gaussian noise
 y1_noise = y1 + generate_gaussian_noise(len(y1), noise_snr) 
+
+# Generate the dataFrame to plot the noise with braille
+y1_noise.to_frame()
+data_float_noise = data_float.loc[:, 0].to_frame()
+data_float_noise = data_float_noise.join(y1_noise.to_frame())
+generate_braille_plot(data_float_noise)
 
 # Save sound
 wav_name_noise = path[:-4] + '_noise.wav'
