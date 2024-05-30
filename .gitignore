@@ -1,5 +1,8 @@
 data/*.wav
 data/*.mp3
 data/*.png
+data2/*.wav
+data2/*.mp3
+data2/*.png
 */__pycache__
 
