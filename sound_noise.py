@@ -211,7 +211,38 @@ def check_and_display_type(variable):
     else:
         print("The variable is not a recognized type.")
 
-def generate_braille_plot(dataframe, brailleweight=500):
+def numinbraille(floatnum):
+    num_primera_serie = [['010110'], 
+                         ['100000'], 
+                         ['110000'],
+                         ['100100'],
+                         ['100110'],
+                         ['100010'],
+                         ['110100'],
+                         ['110110'],
+                         ['110010'],
+                         ['010100']]
+    simbolo_num = [['001111']]
+    simbolo_resta = [['001001']]
+    # convertion
+    totext = [simbolo_num[0].copy()]
+    if (floatnum < 0) and (int(abs(floatnum)) == 0):
+        num = str(1)
+    else:
+        num = str(int(abs(floatnum)))
+    for i in num:
+        a = num_primera_serie[int(i)]
+        totext[0].append(a[0])
+    if floatnum < 0:
+        totext2 = [simbolo_resta[0].copy()]
+        for i in totext[0]:
+            totext2[0].append(i)
+        totext2 = brl.toUnicodeSymbols(totext2, flatten=True)
+        return totext2
+    totext = brl.toUnicodeSymbols(totext, flatten=True)
+    return totext
+
+def generate_braille_plot(dataframe, name='plot-braille.png', brailleweight=500):
     # Generate the braille plot
     figbraille = plt.figure()
     axbraille = plt.axes()
@@ -224,36 +255,20 @@ def generate_braille_plot(dataframe, brailleweight=500):
     abs_val_array = np.abs(dataframe.loc[:,0] - dataframe.loc[:,0].max())
     x_pos_max = abs_val_array.idxmin()
 
-    xinicio_text = str(int(dataframe.loc[x_pos_min,0]))
-    xinicio_text = brl.translate(xinicio_text)
-    if dataframe.loc[x_pos_min,0] < 0:
-        caract_resta = [['001001']]
-        for i in xinicio_text[0]:
-            caract_resta[0].append(i)
-        xinicio_text = caract_resta
-    xinicio_text = brl.toUnicodeSymbols(xinicio_text, flatten=True)
-    xmedio_text = str(int(dataframe.loc[x_pos_middle,0]))
-    xmedio_text = brl.translate(xmedio_text)
-    if dataframe.loc[x_pos_middle,0] < 0:
-        caract_resta = [['001001']]
-        for i in xmedio_text[0]:
-            caract_resta[0].append(i)
-        xmedio_text = caract_resta
-    xmedio_text = brl.toUnicodeSymbols(xmedio_text, flatten=True)
-    xfinal_text = str(int(dataframe.loc[x_pos_max,0]))
-    xfinal_text = brl.translate(xfinal_text)
-    if dataframe.loc[x_pos_max,0] < 0:
-        caract_resta = [['001001']]
-        for i in xfinal_text[0]:
-            caract_resta[0].append(i)
-        xfinal_text = caract_resta
-    xfinal_text = brl.toUnicodeSymbols(xfinal_text, flatten=True)
+    # primer numero del eje x
+    xinicio_text = numinbraille(dataframe.loc[x_pos_min,0])
+    # numero medio del eje x
+    xmedio_text = numinbraille(dataframe.loc[x_pos_middle,0])
+    # numero final del eje x
+    xfinal_text = numinbraille(dataframe.loc[x_pos_max,0])
+    
     axbraille.set_xticks([dataframe.loc[x_pos_min,0],dataframe.loc[x_pos_middle,0],dataframe.loc[x_pos_max,0]], 
                         [xinicio_text,xmedio_text,xfinal_text], 
                         fontsize=24,
                         fontfamily='serif',
                         fontweight=brailleweight,
                         position=(0,-0.04))
+
     # 3 valores de eje y en braille
     # Found min, middle, max possitions and values
     abs_val_array = np.abs(dataframe.loc[:,1] - dataframe.loc[:,1].min())
@@ -264,30 +279,9 @@ def generate_braille_plot(dataframe, brailleweight=500):
     abs_val_array = np.abs(dataframe.loc[:,1] - dataframe.loc[:,1].max())
     y_pos_max = abs_val_array.idxmin()
 
-    y_pos_min_text = str(int(dataframe.loc[y_pos_min,1]))
-    y_pos_min_text = brl.translate(y_pos_min_text)
-    if dataframe.loc[y_pos_min,1] < 0:
-        caract_resta = [['001001']]
-        for i in y_pos_min_text[0]:
-            caract_resta[0].append(i)
-        y_pos_min_text = caract_resta
-    y_pos_min_text = brl.toUnicodeSymbols(y_pos_min_text, flatten=True)
-    y_pos_middle_text = str(int(dataframe.loc[y_pos_middle,1]))
-    y_pos_middle_text = brl.translate(y_pos_middle_text)
-    if dataframe.loc[y_pos_middle,1] < 0:
-        caract_resta = [['001001']]
-        for i in y_pos_middle_text[0]:
-            caract_resta[0].append(i)
-        y_pos_middle_text = caract_resta
-    y_pos_middle_text = brl.toUnicodeSymbols(y_pos_middle_text, flatten=True)
-    y_pos_max_text = str(int(dataframe.loc[y_pos_max,1]))
-    y_pos_max_text = brl.translate(y_pos_max_text)
-    if dataframe.loc[y_pos_max,1] < 0:
-        caract_resta = [['001001']]
-        for i in y_pos_max_text[0]:
-            caract_resta[0].append(i)
-        y_pos_max_text = caract_resta
-    y_pos_max_text = brl.toUnicodeSymbols(y_pos_max_text, flatten=True)
+    y_pos_min_text = numinbraille(dataframe.loc[y_pos_min,1])
+    y_pos_middle_text = numinbraille(dataframe.loc[y_pos_middle,1])
+    y_pos_max_text = numinbraille(dataframe.loc[y_pos_max,1])
     axbraille.set_yticks([dataframe.loc[y_pos_min,1],dataframe.loc[y_pos_middle,1],dataframe.loc[y_pos_max,1]], 
                         [y_pos_min_text,y_pos_middle_text,y_pos_max_text], 
                         fontsize=24,
@@ -310,7 +304,7 @@ def generate_braille_plot(dataframe, brailleweight=500):
     # Resize
     figbraille.tight_layout()
     # Save braille figure
-    brailleplot_path = path[:-4] + 'plot-braille.png'
+    brailleplot_path = path[:-4] + name
     figbraille.savefig(brailleplot_path)
     plt.close()
 
@@ -346,7 +340,7 @@ plot_path = path[:-4] + 'plot.png'
 fig.savefig(plot_path)
 plt.close()
 
-generate_braille_plot(data_float)
+generate_braille_plot(data_float, 'plot-braille1.png')
 
 # Reproduction
 # Normalize the data to sonify
@@ -366,7 +360,7 @@ y1_noise = y1 + generate_gaussian_noise(len(y1), noise_snr)
 y1_noise.to_frame()
 data_float_noise = data_float.loc[:, 0].to_frame()
 data_float_noise = data_float_noise.join(y1_noise.to_frame())
-generate_braille_plot(data_float_noise)
+generate_braille_plot(data_float_noise, 'plot-braille2.png')
 
 # Save sound
 wav_name_noise = path[:-4] + '_noise.wav'
