@@ -43,13 +43,14 @@ class PredefMathFunctions(object):
             equal_values = np.all(data_y == data_y[init])
             # If True set a medium value, if not perform the normalization
             if equal_values:
-                new_y = np.copy(data_y)
-                new_y.fill(0)
+                #new_y = np.copy(data_y)
+                #new_y.fill(0)
+                return data_x, data_y, True
             else:
                 #Perform the normalization
                 new_y = ((data_y-np.nanmin(data_y)) 
                     / (np.nanmax(data_y)-np.nanmin(data_y)))
-            return data_x, new_y, True
+                return data_x, new_y, True
         except Exception as Error:
             self._export_error_info.writeexception(Error)
             return data_x, data_y, False
