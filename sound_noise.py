@@ -340,6 +340,8 @@ plot_path = path[:-4] + 'plot.png'
 fig.savefig(plot_path)
 plt.close()
 
+print(type(data_float))
+
 generate_braille_plot(data_float, 'plot-braille1.png')
 
 # Reproduction
