@@ -56,7 +56,13 @@ parser.add_argument("-t", "--file-type", type=str,
                     help="Select file type (csv, txt). Defaults to txt.",
                     choices=['csv', 'txt'])
 # Receive the directory path from the arguments
-parser.add_argument("-d", "--directory", type=str,
+parser.add_argument("-d1", "--directory1", type=str,
+                    help="Indicate a directory to process as batch.")
+parser.add_argument("-d2", "--directory2", type=str,
+                    help="Indicate a directory to process as batch.")
+parser.add_argument("-d3", "--directory3", type=str,
+                    help="Indicate a directory to process as batch.")
+parser.add_argument("-d4", "--directory4", type=str,
                     help="Indicate a directory to process as batch.")
 # Indicate to save or not the plot
 parser.add_argument("-p", "--save-plot", type=bool,
@@ -70,13 +76,26 @@ parser.add_argument("-n", "--noise_snr", type=float,
 # default
 args = parser.parse_args()
 ext = args.file_type or 'txt'
-path = args.directory
+#path = args.directory
+path1 = args.directory1
+path2 = args.directory2
+path3 = args.directory3
+path4 = args.directory4
 plot_flag = args.save_plot or True
 noise_snr = args.noise_snr
 
 # Print a messege if path is not indicated by the user
-if not path:
+if not path1:
     print('1At least on intput must be stated.\nUse -h if you need help.')
+    exit()
+if not path2:
+    print('2At least on intput must be stated.\nUse -h if you need help.')
+    exit()
+if not path3:
+    print('3At least on intput must be stated.\nUse -h if you need help.')
+    exit()
+if not path4:
+    print('4At least on intput must be stated.\nUse -h if you need help.')
     exit()
 # Format the extension to use it with glob
 extension = '*.' + ext
@@ -220,10 +239,10 @@ def numinbraille(floatnum):
     simbolo_resta = [['001001']]
     # convertion
     totext = [simbolo_num[0].copy()]
-    if (floatnum < 0) and (int(abs(floatnum)) == 0):
+    if (floatnum < 0) and (round(abs(floatnum)) == 0):
         num = str(1)
     else:
-        num = str(int(abs(floatnum)))
+        num = str(round(abs(floatnum)))
     for i in num:
         a = num_primera_serie[int(i)]
         totext[0].append(a[0])
@@ -236,27 +255,47 @@ def numinbraille(floatnum):
     totext = brl.toUnicodeSymbols(totext, flatten=True)
     return totext
 
-def generate_braille_plot(dataframe, name='plot-braille.png', brailleweight=500):
+def generate_braille_plot(data1, data2, data3, data4, plotbraille_path='plot-braille.png', brailleweight=500):
     # Generate the braille plot
     figbraille = plt.figure()
-    axbraille = plt.axes()
+
+    #First plot
+    ax1 = plt.subplot(311)      #ax = plt.subplot(111) para un solo plot
+    ax1.plot(data1.loc[:,1], data1.loc[:,2], '#2874a6', linewidth=3) #O5
+    #ax1.plot(data_float4.loc[:,1], data_float4.loc[:,2], label='Unknown')
+    #plt.tick_params('x', labelsize=6)
+    ax1.tick_params('x', labelbottom=False)
+
+    # Second plot
+    ax2 = plt.subplot(312, sharex=ax1)
+    ax2.plot(data2.loc[:,1], data2.loc[:,2], '#2874a6', linewidth=3) #A5
+    #ax2.plot(data_float4.loc[:,1], data_float4.loc[:,2], label='Unknown')
+    # make these tick labels invisible
+    ax2.tick_params('x', labelbottom=False)
+
+    # Third plot
+    ax3 = plt.subplot(313, sharex=ax1, sharey=ax1)
+    ax3.plot(data3.loc[:,1], data3.loc[:,2], '#2874a6', linewidth=3) #G0
+    #ax3.plot(data_float4.loc[:,1], data_float4.loc[:,2], label='Unknown')
+
+    #axbraille = plt.axes()
     # 3 valores de eje x en braille
-    abs_val_array = np.abs(dataframe.loc[:,0] - dataframe.loc[:,0].min())
+    abs_val_array = np.abs(data1.loc[:,1] - data1.loc[:,1].min())
     x_pos_min = abs_val_array.idxmin()
-    middle = ((dataframe.loc[:,0].max() - dataframe.loc[:,0].min())/2) + dataframe.loc[:,0].min()
-    abs_val_array = np.abs(dataframe.loc[:,0] - middle)
+    middle = ((data1.loc[:,1].max() - data1.loc[:,1].min())/2) + data1.loc[:,1].min()
+    abs_val_array = np.abs(data1.loc[:,1] - middle)
     x_pos_middle = abs_val_array.idxmin()
-    abs_val_array = np.abs(dataframe.loc[:,0] - dataframe.loc[:,0].max())
+    abs_val_array = np.abs(data1.loc[:,1] - data1.loc[:,1].max())
     x_pos_max = abs_val_array.idxmin()
 
     # primer numero del eje x
-    xinicio_text = numinbraille(dataframe.loc[x_pos_min,0])
+    xinicio_text = numinbraille(data1.loc[x_pos_min,1])
     # numero medio del eje x
-    xmedio_text = numinbraille(dataframe.loc[x_pos_middle,0])
+    xmedio_text = numinbraille(data1.loc[x_pos_middle,1])
     # numero final del eje x
-    xfinal_text = numinbraille(dataframe.loc[x_pos_max,0])
+    xfinal_text = numinbraille(data1.loc[x_pos_max,1])
     
-    axbraille.set_xticks([dataframe.loc[x_pos_min,0],dataframe.loc[x_pos_middle,0],dataframe.loc[x_pos_max,0]], 
+    ax3.set_xticks([data1.loc[x_pos_min,1],data1.loc[x_pos_middle,1],data1.loc[x_pos_max,1]], 
                         [xinicio_text,xmedio_text,xfinal_text], 
                         fontsize=24,
                         fontfamily='serif',
@@ -265,84 +304,182 @@ def generate_braille_plot(dataframe, name='plot-braille.png', brailleweight=500)
 
     # 3 valores de eje y en braille
     # Found min, middle, max possitions and values
-    abs_val_array = np.abs(dataframe.loc[:,1] - dataframe.loc[:,1].min())
+    abs_val_array = np.abs(data1.loc[:,2] - data1.loc[:,2].min())
     y_pos_min = abs_val_array.idxmin()
-    middle = ((dataframe.loc[:,1].max() - dataframe.loc[:,1].min())/2) + dataframe.loc[:,1].min()
-    abs_val_array = np.abs(dataframe.loc[:,1] - middle)
+    middle = ((data1.loc[:,2].max() - data1.loc[:,2].min())/2) + data1.loc[:,2].min()
+    abs_val_array = np.abs(data1.loc[:,2] - middle)
     y_pos_middle = abs_val_array.idxmin()
-    abs_val_array = np.abs(dataframe.loc[:,1] - dataframe.loc[:,1].max())
+    abs_val_array = np.abs(data1.loc[:,2] - data1.loc[:,2].max())
     y_pos_max = abs_val_array.idxmin()
 
-    y_pos_min_text = numinbraille(dataframe.loc[y_pos_min,1])
-    y_pos_middle_text = numinbraille(dataframe.loc[y_pos_middle,1])
-    y_pos_max_text = numinbraille(dataframe.loc[y_pos_max,1])
-    axbraille.set_yticks([dataframe.loc[y_pos_min,1],dataframe.loc[y_pos_middle,1],dataframe.loc[y_pos_max,1]], 
-                        [y_pos_min_text,y_pos_middle_text,y_pos_max_text], 
+    y_pos_min_text = numinbraille(data1.loc[y_pos_min,2])
+    y_pos_middle_text = numinbraille(data1.loc[y_pos_middle,2])
+    y_pos_max_text = numinbraille(data1.loc[y_pos_max,2])
+    ax1.set_yticks([data1.loc[y_pos_min,2],data1.loc[y_pos_max,2]], 
+                        [y_pos_min_text,y_pos_max_text], 
+                        fontsize=24,
+                        fontfamily='serif',
+                        fontweight=brailleweight)
+    ax2.set_yticks([data1.loc[y_pos_min,2],data1.loc[y_pos_max,2]], 
+                        [y_pos_min_text,y_pos_max_text], 
+                        fontsize=24,
+                        fontfamily='serif',
+                        fontweight=brailleweight)
+    ax3.set_yticks([data1.loc[y_pos_min,2],data1.loc[y_pos_max,2]], 
+                        [y_pos_min_text,y_pos_max_text], 
                         fontsize=24,
                         fontfamily='serif',
                         fontweight=brailleweight)
 
-    axbraille.set_title(' ')
+    ax1.set_title(' ')
     x = brl.translate('x')
     x = brl.toUnicodeSymbols(x, flatten=True)
-    axbraille.set_xlabel(x, fontsize=24, fontfamily='serif', fontweight=brailleweight, labelpad=15)
+    ax3.set_xlabel(x, fontsize=24, fontfamily='serif', fontweight=brailleweight, labelpad=15)
     y = brl.translate('y')
     y = brl.toUnicodeSymbols(y, flatten=True)
-    axbraille.set_ylabel(y, fontsize=24, fontfamily='serif', fontweight=brailleweight, labelpad=10, rotation=0)
-    axbraille.plot(dataframe.loc[:, 0], dataframe.loc[:, 1], '#2874a6', linewidth=3)
+    ax2.set_ylabel(y, fontsize=24, fontfamily='serif', fontweight=brailleweight, labelpad=10, rotation=0)
+
+    
+
+
+    #axbraille.plot(dataframe.loc[:, 0], dataframe.loc[:, 1], '#2874a6', linewidth=3)
     # Ejes de coordenadas
-    if dataframe.loc[:, 0].min() < 0 and dataframe.loc[:, 0].max() > 0:
-        axbraille.axvline(x=0, color='k', linewidth=1)
-    if dataframe.loc[:, 1].min() < 0 and dataframe.loc[:, 1].max() > 0:
-        axbraille.axhline(y=0, color='k', linewidth=1)
+    #if dataframe.loc[:, 0].min() < 0 and dataframe.loc[:, 0].max() > 0:
+    #    axbraille.axvline(x=0, color='k', linewidth=1)
+    #if dataframe.loc[:, 1].min() < 0 and dataframe.loc[:, 1].max() > 0:
+    #    axbraille.axhline(y=0, color='k', linewidth=1)
     # Resize
     figbraille.tight_layout()
     # Save braille figure
-    brailleplot_path = path[:-4] + name
-    figbraille.savefig(brailleplot_path)
+    figbraille.savefig(plotbraille_path)
     plt.close()
 
 # Create an empty figure or plot to save it
 fig = plt.figure()
 # Defining the axes so that we can plot data into it.
-ax = plt.axes()
+#ax = plt.axes()
 
 # Open each file
-data, status, msg = _dataimport.set_arrayfromfile(path, ext)
+#data, status, msg = _dataimport.set_arrayfromfile(path, ext)
+data1, status, msg = _dataimport.set_arrayfromfile(path1, ext)
+data2, status, msg = _dataimport.set_arrayfromfile(path2, ext)
+data3, status, msg = _dataimport.set_arrayfromfile(path3, ext)
+data4, status, msg = _dataimport.set_arrayfromfile(path4, ext)
 # Check if the import is correct
-if data.shape[1]<2:
+if data1.shape[1]<2:
     print("Error reading file 1, only detect one column.")
     exit()
+if data2.shape[1]<2:
+    print("Error reading file 2, only detect one column.")
+    exit()
+if data3.shape[1]<2:
+    print("Error reading file 3, only detect one column.")
+    exit()
+if data4.shape[1]<2:
+    print("Error reading file 4, only detect one column.")
+    exit()
 # Extract the names and turn to float
-data_float = data.iloc[1:, :].astype(float)
-x_pos_min = 1
+data_float1 = data1.iloc[1:, 1:].astype(float)
+data_float2 = data2.iloc[1:, 1:].astype(float)
+data_float3 = data3.iloc[1:, 1:].astype(float)
+data_float4 = data4.iloc[1:, 1:].astype(float)
+
+#Inicializamos la posición para no tener error cuando no haya recortes
+x_pos_min = 0
+
+# Cut first data set
+abs_val_array = np.abs(data_float1.loc[:,1] - 3700)
+x_pos_min = abs_val_array.idxmin()
+abs_val_array = np.abs(data_float1.loc[:,1] - 4700)
+x_pos_max = abs_val_array.idxmin()
+data_float1 = data1.iloc[x_pos_min:x_pos_max, :].astype(float)
+# Cut second data set
+data_float2 = data2.iloc[x_pos_min:x_pos_max, :].astype(float)
+# Cut third data set
+data_float3 = data3.iloc[x_pos_min:x_pos_max, :].astype(float)
+# Cut fourth data set
+data_float4 = data4.iloc[x_pos_min:x_pos_max, :].astype(float)
+
+# Para presentar los datos en nm en lugar de Armstrong
+data_float1.loc[:,1] = data_float1.loc[:,1] / 10
+data_float2.loc[:,1] = data_float2.loc[:,1] / 10
+data_float3.loc[:,1] = data_float3.loc[:,1] / 10
+data_float4.loc[:,1] = data_float4.loc[:,1] / 10
+
+#First plot
+ax1 = plt.subplot(311)      #ax = plt.subplot(111) para un solo plot
+ax1.plot(data_float1.loc[:,1], data_float1.loc[:,2], label='O5 V')
+#ax1.plot(data_float4.loc[:,1], data_float4.loc[:,2], label='Unknown')
+#plt.tick_params('x', labelsize=6)
+ax1.tick_params('x', labelbottom=False)
+
+# Second plot
+ax2 = plt.subplot(312, sharex=ax1)
+ax2.plot(data_float2.loc[:,1], data_float2.loc[:,2], label='A5 V')
+#ax2.plot(data_float4.loc[:,1], data_float4.loc[:,2], label='Unknown')
+# make these tick labels invisible
+ax2.tick_params('x', labelbottom=False)
+
+# Third plot
+ax3 = plt.subplot(313, sharex=ax1, sharey=ax1)
+ax3.plot(data_float3.loc[:,1], data_float3.loc[:,2], label='G0 V')
+#ax3.plot(data_float4.loc[:,1], data_float4.loc[:,2], label='Unknown')
+
+ax1.legend()
+ax2.legend()
+ax3.legend()
+
+plot_path = path1[:-6] + 'plot.png'
+fig.savefig(plot_path)
 
 # Generate de plot
-ax.set_xlabel('x')
-ax.set_ylabel('y', rotation=0)
+#ax.set_xlabel('x')
+#ax.set_ylabel('y', rotation=0)
 # Separate the name file from the path to set the plot title
-filename = os.path.basename(path)
+#filename = os.path.basename(path)
 # Plot 
-ax.plot(data_float.loc[:, 0], data_float.loc[:, 1], '#2874a6', linewidth=3)
+#ax.plot(data_float.loc[:, 0], data_float.loc[:, 1], '#2874a6', linewidth=3)
 # Ejes de coordenadas
-if data_float.loc[:, 0].min() < 0:
-    ax.axvline(x=0, color='k', linewidth=1)
-if data_float.loc[:, 1].min() < 0:
-    ax.axhline(y=0, color='k', linewidth=1)
+#if data_float.loc[:, 0].min() < 0:
+#    ax.axvline(x=0, color='k', linewidth=1)
+#if data_float.loc[:, 1].min() < 0:
+#    ax.axhline(y=0, color='k', linewidth=1)
 # Set the path to save the plot and save it
-plot_path = path[:-4] + 'plot.png'
-fig.savefig(plot_path)
+#plot_path = path[:-4] + 'plot.png'
+#fig.savefig(plot_path)
 plt.close()
 
-generate_braille_plot(data_float, 'plot-braille1.png')
+plotbraille_path = path1[:-6] + 'plotbraille.png'
+generate_braille_plot(data_float1, data_float2, data_float3, data_float4, plotbraille_path)
 
 # Reproduction
 # Normalize the data to sonify
-x1, y1, status = _math.normalize(data_float.loc[:, 0], data_float.loc[:, 1], init=x_pos_min)
+x1, y1, status = _math.normalize(data_float1.loc[:,1], data_float1.loc[:,2], init=x_pos_min)
+x2, y2, status = _math.normalize(data_float2.loc[:,1], data_float2.loc[:,2], init=x_pos_min)
+x3, y3, status = _math.normalize(data_float3.loc[:,1], data_float3.loc[:,2], init=x_pos_min)
+x4, y4, status = _math.normalize(data_float4.loc[:,1], data_float4.loc[:,2], init=x_pos_min)
 
 # Save sound
-wav_name = path[:-4] + '_sound.wav'
-path_mp3 = path[:-4] + '_sound.mp3'
-x_pos_min = 1
-_simplesound.save_sound(wav_name, data_float.loc[:,0], y1, init=x_pos_min) 
-wav_to_mp3(wav_name, path_mp3)
+wav_name1 = path1[:-6] + 'O5.wav'
+wav_name2 = path1[:-6] + 'A5.wav'
+wav_name3 = path1[:-6] + 'G0.wav'
+wav_name4 = path1[:-6] + 'unknown.wav'
+mp3_name1 = path1[:-6] + 'O5.mp3'
+mp3_name2 = path1[:-6] + 'A5.mp3'
+mp3_name3 = path1[:-6] + 'G0.mp3'
+mp3_name4 = path1[:-6] + 'unknown.mp3'
+_simplesound.save_sound(wav_name1, data_float1.loc[:,1], y1, init=x_pos_min)
+wav_to_mp3(wav_name1, mp3_name1)
+_simplesound.save_sound(wav_name2, data_float1.loc[:,1], y1, init=x_pos_min)
+wav_to_mp3(wav_name2, mp3_name2)
+_simplesound.save_sound(wav_name3, data_float1.loc[:,1], y1, init=x_pos_min)
+wav_to_mp3(wav_name3, mp3_name3)
+_simplesound.save_sound(wav_name4, data_float1.loc[:,1], y1, init=x_pos_min)
+wav_to_mp3(wav_name4, mp3_name4)
+# Para sonidos combinados las siguientes líneas
+#_simplesound.save_sound_multicol_stars(wav_name1, data_float1.loc[:,1], y1, y4, init=x_pos_min) 
+#_simplesound.save_sound_multicol_stars(wav_name2, data_float1.loc[:,1], y2, y4, init=x_pos_min)
+#_simplesound.save_sound_multicol_stars(wav_name3, data_float1.loc[:,1], y3, y4, init=x_pos_min)
+# Print time
+now = datetime.datetime.now()
+print(now.strftime('%Y-%m-%d_%H-%M-%S'))
