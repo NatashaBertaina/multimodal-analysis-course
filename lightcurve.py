@@ -97,10 +97,10 @@ def numinbraille(floatnum):
     simbolo_resta = [['001001']]
     # convertion
     totext = [simbolo_num[0].copy()]
-    if (floatnum < 0) and (int(abs(floatnum)) == 0):
+    if (floatnum < 0) and (round(abs(floatnum)) == 0):
         num = str(1)
     else:
-        num = str(int(abs(floatnum)))
+        num = str(round(abs(floatnum)))
     for i in num:
         a = num_primera_serie[int(i)]
         totext[0].append(a[0])
@@ -113,70 +113,87 @@ def numinbraille(floatnum):
     totext = brl.toUnicodeSymbols(totext, flatten=True)
     return totext
 
-def generate_braille_plot(x, y, name='plot-braille.png', brailleweight=500):
+def generate_braille_plot(x,y, plot_braille_path='plot-braille.png', brailleweight=500):
     # Generate the braille plot
     figbraille = plt.figure()
     axbraille = plt.axes()
     # 3 valores de eje x en braille
-    abs_val_array = np.abs(x.iloc[:,0] - x.iloc[:,0].min())
+    #abs_val_array = np.abs(dataframe.iloc[:,0] - dataframe.iloc[:,0].min())
+    abs_val_array = np.abs(x - x.min())
     x_pos_min = abs_val_array.idxmin()
-    middle = ((x.iloc[:,0].max() - x.iloc[:,0].min())/2) + x.iloc[:,0].min()
-    abs_val_array = np.abs(x.iloc[:,0] - middle)
+    #middle = ((dataframe.iloc[:,0].max() - dataframe.iloc[:,0].min())/2) + dataframe.iloc[:,0].min()
+    middle = ((x.max() - x.min())/2) + x.min()
+    #abs_val_array = np.abs(dataframe.iloc[:,0] - middle)
+    abs_val_array = np.abs(x - middle)
     x_pos_middle = abs_val_array.idxmin()
-    abs_val_array = np.abs(x.iloc[:,0] - x.iloc[:,0].max())
+    #abs_val_array = np.abs(dataframe.iloc[:,0] - dataframe.iloc[:,0].max())
+    abs_val_array = np.abs(x - x.max())
     x_pos_max = abs_val_array.idxmin()
 
     # primer numero del eje x
-    xinicio_text = numinbraille(x.iloc[x_pos_min,0])
+    #xinicio_text = numinbraille(dataframe.iloc[x_pos_min,0])
+    xinicio_text = numinbraille(x[x_pos_min])
     # numero medio del eje x
-    xmedio_text = numinbraille(x.iloc[x_pos_middle,0])
+    #xmedio_text = numinbraille(dataframe.iloc[x_pos_middle,0])
+    xmedio_text = numinbraille(x[x_pos_middle])
     # numero final del eje x
-    xfinal_text = numinbraille(x.iloc[x_pos_max,0])
+    #xfinal_text = numinbraille(dataframe.iloc[x_pos_max,0])
+    xfinal_text = numinbraille(x[x_pos_max])
     
-    #axbraille.set_xticks([dataframe.iloc[x_pos_min,0],dataframe.iloc[x_pos_middle,0],dataframe.iloc[x_pos_max,0]], 
-    #                    [xinicio_text,xmedio_text,xfinal_text], 
-    #                    fontsize=24,
-    #                    fontfamily='serif',
-    #                    fontweight=brailleweight,
-    #                    position=(0,-0.04))
+    axbraille.set_xticks([x[x_pos_min],x[x_pos_middle],x[x_pos_max]], 
+                        [xinicio_text,xmedio_text,xfinal_text], 
+                        fontsize=24,
+                        fontfamily='serif',
+                        fontweight=brailleweight,
+                        position=(0,-0.04))
 
     # 3 valores de eje y en braille
     # Found min, middle, max possitions and values
-    abs_val_array = np.abs(y.iloc[:,1] - y.iloc[:,1].min())
-    y_pos_min = abs_val_array.idxmin()
-    middle = ((y.iloc[:,1].max() - y.iloc[:,1].min())/2) + y.iloc[:,1].min()
-    abs_val_array = np.abs(y.iloc[:,1] - middle)
-    y_pos_middle = abs_val_array.idxmin()
-    abs_val_array = np.abs(y.iloc[:,1] - y.iloc[:,1].max())
-    y_pos_max = abs_val_array.idxmin()
+    #abs_val_array = np.abs(dataframe.iloc[:,1] - dataframe.iloc[:,1].min())
+    abs_val_array = np.abs(y - y.min())
+    y_pos_min = abs_val_array.argmin()
+    #middle = ((dataframe.iloc[:,1].max() - dataframe.iloc[:,1].min())/2) + dataframe.iloc[:,1].min()
+    middle = ((y.max() - y.min())/2) + y.min()
+    #abs_val_array = np.abs(dataframe.iloc[:,1] - middle)
+    abs_val_array = np.abs(y - middle)
+    y_pos_middle = abs_val_array.argmin()
+    #abs_val_array = np.abs(dataframe.iloc[:,1] - dataframe.iloc[:,1].max())
+    abs_val_array = np.abs(y - y.max())
+    y_pos_max = abs_val_array.argmin()
 
-    y_pos_min_text = numinbraille(y.iloc[y_pos_min,1])
-    y_pos_middle_text = numinbraille(y.iloc[y_pos_middle,1])
-    y_pos_max_text = numinbraille(y.iloc[y_pos_max,1])
-    #axbraille.set_yticks([dataframe.iloc[y_pos_min,1],dataframe.iloc[y_pos_middle,1],dataframe.iloc[y_pos_max,1]], 
-    #                    [y_pos_min_text,y_pos_middle_text,y_pos_max_text], 
-    #                    fontsize=24,
-    #                    fontfamily='serif',
-    #                    fontweight=brailleweight)
+    #y_pos_min_text = numinbraille(dataframe.iloc[y_pos_min,1])
+    y_pos_min_text = numinbraille(y[y_pos_min])
+    #y_pos_middle_text = numinbraille(dataframe.iloc[y_pos_middle,1])
+    y_pos_middle_text = numinbraille(y[y_pos_middle])
+    #y_pos_max_text = numinbraille(dataframe.iloc[y_pos_max,1])
+    y_pos_max_text = numinbraille(y[y_pos_max])
+    axbraille.set_yticks([y[y_pos_min],y[y_pos_max]], 
+                        [y_pos_min_text,y_pos_max_text], 
+                        fontsize=24,
+                        fontfamily='serif',
+                        fontweight=brailleweight)
 
     axbraille.set_title(' ')
-    x = brl.translate('x')
-    x = brl.toUnicodeSymbols(x, flatten=True)
-    axbraille.set_xlabel(x, fontsize=24, fontfamily='serif', fontweight=brailleweight, labelpad=15)
-    y = brl.translate('y')
-    y = brl.toUnicodeSymbols(y, flatten=True)
-    axbraille.set_ylabel(y, fontsize=24, fontfamily='serif', fontweight=brailleweight, labelpad=10, rotation=0)
-    axbraille.scatter(dataframe.iloc[:, 0], dataframe.iloc[:, 1])#, '#2874a6', linewidth=3)
+    #axbraille.set_xlabel('Phase')
+    x_label = brl.translate('fase')
+    x_label = brl.toUnicodeSymbols(x_label, flatten=True)
+    axbraille.set_xlabel(x_label, fontsize=24, fontfamily='serif', fontweight=brailleweight, labelpad=15)
+    #axbraille.set_ylabel('Mag')
+    y_label = brl.translate('mag')
+    y_label = brl.toUnicodeSymbols(y_label, flatten=True)
+    axbraille.set_ylabel(y_label, fontsize=24, fontfamily='serif', fontweight=brailleweight, labelpad=10)
+    #axbraille.scatter(dataframe.iloc[:, 0], dataframe.iloc[:, 1])#, '#2874a6', linewidth=3)
+    axbraille.invert_yaxis()
+    axbraille.scatter(x,y)
     # Ejes de coordenadas
-    if dataframe.iloc[:, 0].min() < 0 and dataframe.iloc[:, 0].max() > 0:
-        axbraille.axvline(x=0, color='k', linewidth=1)
-    if dataframe.iloc[:, 1].min() < 0 and dataframe.iloc[:, 1].max() > 0:
-        axbraille.axhline(y=0, color='k', linewidth=1)
+    #if dataframe.iloc[:, 0].min() < 0 and dataframe.iloc[:, 0].max() > 0:
+    #    axbraille.axvline(x=0, color='k', linewidth=1)
+    #if dataframe.iloc[:, 1].min() < 0 and dataframe.iloc[:, 1].max() > 0:
+    #    axbraille.axhline(y=0, color='k', linewidth=1)
     # Resize
     figbraille.tight_layout()
     # Save braille figure
-    brailleplot_path = path[:-4] + name
-    figbraille.savefig(brailleplot_path)
+    figbraille.savefig(plot_braille_path)
     plt.close()
 
 
@@ -214,20 +231,24 @@ for filename in glob.glob(os.path.join(path, extension)):
     t0_CGCas = 2457412.70647
     t0_RWPhe = 2458053.49761
 
-    # """Para CGCas"""
-    # new_df.loc[:,2] = (new_df.loc[:,2].astype(float) - t0_CGCas) / periodo_CGCas
-    # new_df.loc[:,2] = (new_df.loc[:,2] - new_df.loc[:,2].astype(float).astype(int)) + 0.79
-    # for i in range (1,(len(new_df.loc[:,2]))):
-    #     if new_df.loc[i,2] < 0:
-    #         new_df.loc[i,2] = new_df.loc[i,2] + 2
-    """Para RWPhe"""
-    new_df.loc[:,0] = (new_df.loc[:,0].astype(float) - t0_RWPhe) / periodo_RWPhe
-    new_df.loc[:,0] = (new_df.loc[:,0] - new_df.loc[:,0].astype(float).astype(int)) + 0.55
-    for i in range (1,(len(new_df.loc[:,0]))):
-        if new_df.loc[i,0] < 0:
-            new_df.loc[i,0] = new_df.loc[i,0] + 2
-    
-    
+    starType = 'RWPhe'
+    if starType == 'CGCas':
+        """Para CGCas"""
+        new_df.loc[:,0] = (new_df.loc[:,0].astype(float) - t0_CGCas) / periodo_CGCas
+        new_df.loc[:,0] = (new_df.loc[:,0] - new_df.loc[:,0].astype(float).astype(int)) + 0.79
+        for i in range (1,(len(new_df.loc[:,0]))):
+            if new_df.loc[i,0] < 0:
+                new_df.loc[i,0] = new_df.loc[i,0] + 2
+    elif starType == 'RWPhe':
+        """Para RWPhe"""
+        new_df.loc[:,0] = (new_df.loc[:,0].astype(float) - t0_RWPhe) / periodo_RWPhe
+        new_df.loc[:,0] = (new_df.loc[:,0] - new_df.loc[:,0].astype(float).astype(int)) + 0.55
+        for i in range (1,(len(new_df.loc[:,0]))):
+            if new_df.loc[i,0] < 0:
+                new_df.loc[i,0] = new_df.loc[i,0] + 2
+    else:
+        print('Error en el tipo de estrella.')
+        
     new_df.loc[:,2] = new_df.loc[:,2].astype(float)
     
     sort_df = pd.DataFrame(new_df).sort_values(0, axis=0)
@@ -250,8 +271,10 @@ for filename in glob.glob(os.path.join(path, extension)):
         ax.invert_yaxis()
         # Separate the name file from the path to set the plot title
         head, tail = os.path.split(filename)
-        #ax.set_title('CG-Cas-Cepheid')
-        ax.set_title('RW-Phe-Eclipsing Binary')
+        if starType == 'CGCas':
+            ax.set_title('CG-Cas-Cepheid')
+        elif starType == 'RWPhe':
+            ax.set_title('RW-Phe-Eclipsing Binary')
         # xnumpy = xnumpy / 10
         # ax.scatter(xnumpy, ynumpy)
         # ax.plot(sort_df.loc[:,2], sort_df.loc[:,4], 'o')
@@ -264,7 +287,8 @@ for filename in glob.glob(os.path.join(path, extension)):
         data_float = sort_df.loc[:, 0].to_frame()
         df = pd.DataFrame(yhat)
         data_float = data_float.join(df, rsuffix='1')
-        generate_braille_plot(sort_df.loc[:,0], yhat, 'plot-braille1.png')
+        plot_braille_path = path + '/' + os.path.basename(filename) + '_plot-braille.png'
+        generate_braille_plot(sort_df.loc[:,0], yhat, plot_braille_path)
         
         #Tratando de invertir valores
         linea_media = (np.nanmax(yhat) - np.nanmin(yhat))/2 + np.nanmin(yhat)
