@@ -470,11 +470,11 @@ mp3_name3 = path1[:-6] + 'G0.mp3'
 mp3_name4 = path1[:-6] + 'unknown.mp3'
 _simplesound.save_sound(wav_name1, data_float1.loc[:,1], y1, init=x_pos_min)
 wav_to_mp3(wav_name1, mp3_name1)
-_simplesound.save_sound(wav_name2, data_float1.loc[:,1], y1, init=x_pos_min)
+_simplesound.save_sound(wav_name2, data_float2.loc[:,1], y2, init=x_pos_min)
 wav_to_mp3(wav_name2, mp3_name2)
-_simplesound.save_sound(wav_name3, data_float1.loc[:,1], y1, init=x_pos_min)
+_simplesound.save_sound(wav_name3, data_float3.loc[:,1], y3, init=x_pos_min)
 wav_to_mp3(wav_name3, mp3_name3)
-_simplesound.save_sound(wav_name4, data_float1.loc[:,1], y1, init=x_pos_min)
+_simplesound.save_sound(wav_name4, data_float4.loc[:,1], y4, init=x_pos_min)
 wav_to_mp3(wav_name4, mp3_name4)
 # Para sonidos combinados las siguientes líneas
 #_simplesound.save_sound_multicol_stars(wav_name1, data_float1.loc[:,1], y1, y4, init=x_pos_min) 

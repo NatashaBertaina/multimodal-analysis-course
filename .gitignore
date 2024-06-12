@@ -4,5 +4,17 @@ data/*.png
 data2/*.wav
 data2/*.mp3
 data2/*.png
+galaxy-stars/galaxy-spectrums/*.wav
+galaxy-stars/galaxy-spectrums/*.mp3
+galaxy-stars/galaxy-spectrums/*.png
+galaxy-stars/light-curves/CGCas/*.wav
+galaxy-stars/light-curves/CGCas/*.mp3
+galaxy-stars/light-curves/CGCas/*.png
+galaxy-stars/light-curves/RWPhe/*.wav
+galaxy-stars/light-curves/RWPhe/*.mp3
+galaxy-stars/light-curves/RWPhe/*.png
+galaxy-stars/star-spectrums/*.wav
+galaxy-stars/star-spectrums/*.mp3
+galaxy-stars/star-spectrums/*.png
 */__pycache__
 
