@@ -40,7 +40,7 @@ _math = PredefMathFunctions()
 # Sound configurations, predefined at the moment
 _simplesound.reproductor.set_continuous()
 _simplesound.reproductor.set_waveform('sine')  # piano; sine
-_simplesound.reproductor.set_time_base(0.1)
+_simplesound.reproductor.set_time_base(0.03)
 _simplesound.reproductor.set_min_freq(380)
 _simplesound.reproductor.set_max_freq(800)
 # The argparse library is used to pass the path and extension where the data
@@ -57,12 +57,17 @@ parser.add_argument("-d", "--directory", type=str,
 parser.add_argument("-p", "--save-plot", type=bool,
                     help="Indicate if you want to save the plot (False as default)",
                     choices=[False,True])
+# Indicate the star type
+parser.add_argument("-s", "--star-type", type=str,
+                    help="Indicate the star type to plot (RWPhe, V0748Cep, ZLep, CGCas, HWPup, MNCam)",
+                    choices=['RWPhe', 'V0748Cep', 'ZLep', 'CGCas', 'HWPup', 'MNCam'])
 # Alocate the arguments in variables, if extension is empty, select txt as
 # default
 args = parser.parse_args()
-ext = args.file_type or 'txt'
+ext = args.file_type or 'csv'
 path = args.directory
-plot_flag = args.save_plot or False
+plot_flag = args.save_plot or True
+starType = args.star_type
 # Print a messege if path is not indicated by the user
 if not path:
     print('At least on intput must be stated.\nUse -h if you need help.')
@@ -226,35 +231,57 @@ for filename in glob.glob(os.path.join(path, extension)):
     # ynumpy = y.values.astype(np.float64)
     
     # Para estrellas variables
+    """https://asas-sn.osu.edu/variables/753bdd73-38a7-5e43-b6c0-063292c7f28d"""
     periodo_CGCas = 4.3652815
-    periodo_RWPhe = 5.4134367
     t0_CGCas = 2457412.70647
+    """https://asas-sn.osu.edu/variables/dfa51488-c6b7-5a03-abd4-df3c28273250"""
+    periodo_RWPhe = 5.4134367
     t0_RWPhe = 2458053.49761
+    """https://asas-sn.osu.edu/variables/dfcbcf52-8a62-542f-9383-1c712d7c042c"""
+    periodo_V0748Cep = 2.5093526
+    t0_V0748Cep = 2458024.93242
+    """https://asas-sn.osu.edu/variables/70cc7024-5027-52f9-a834-75c51f4a5064"""
+    periodo_ZLep = 0.9937068
+    t0_ZLep = 2457699.6236
+    """https://asas-sn.osu.edu/variables/c3faa9d0-6e10-5775-8bb0-075defcd2578"""
+    periodo_MNCam = 8.1796049
+    t0_MNCam = 2458046.08639
+    """https://asas-sn.osu.edu/variables/2083f661-73f5-512f-aee5-fd7ad26d5b30"""
+    periodo_HWPup = 13.4590914
+    t0_HWPup = 2457786.63153
 
-    starType = 'RWPhe'
+    #starType = 'ZLep'
     if starType == 'CGCas':
-        """Para CGCas"""
         new_df.loc[:,0] = (new_df.loc[:,0].astype(float) - t0_CGCas) / periodo_CGCas
         new_df.loc[:,0] = (new_df.loc[:,0] - new_df.loc[:,0].astype(float).astype(int)) + 0.79
-        for i in range (1,(len(new_df.loc[:,0]))):
-            if new_df.loc[i,0] < 0:
-                new_df.loc[i,0] = new_df.loc[i,0] + 2
     elif starType == 'RWPhe':
-        """Para RWPhe"""
         new_df.loc[:,0] = (new_df.loc[:,0].astype(float) - t0_RWPhe) / periodo_RWPhe
         new_df.loc[:,0] = (new_df.loc[:,0] - new_df.loc[:,0].astype(float).astype(int)) + 0.55
-        for i in range (1,(len(new_df.loc[:,0]))):
-            if new_df.loc[i,0] < 0:
-                new_df.loc[i,0] = new_df.loc[i,0] + 2
+    elif starType == 'V0748Cep':
+        new_df.loc[:,0] = (new_df.loc[:,0].astype(float) - t0_V0748Cep) / periodo_V0748Cep
+        new_df.loc[:,0] = (new_df.loc[:,0] - new_df.loc[:,0].astype(float).astype(int)) + 0.45
+    elif starType == 'ZLep':
+        new_df.loc[:,0] = (new_df.loc[:,0].astype(float) - t0_ZLep) / periodo_ZLep
+        new_df.loc[:,0] = (new_df.loc[:,0] - new_df.loc[:,0].astype(float).astype(int))
+    elif starType == 'MNCam':
+        new_df.loc[:,0] = (new_df.loc[:,0].astype(float) - t0_MNCam) / periodo_MNCam
+        new_df.loc[:,0] = (new_df.loc[:,0] - new_df.loc[:,0].astype(float).astype(int)) + 0.45
+    elif starType == 'HWPup':
+        new_df.loc[:,0] = (new_df.loc[:,0].astype(float) - t0_HWPup) / periodo_HWPup
+        new_df.loc[:,0] = (new_df.loc[:,0] - new_df.loc[:,0].astype(float).astype(int)) + 0.10
     else:
         print('Error en el tipo de estrella.')
+
+    for i in range (1,(len(new_df.loc[:,0])+1)):
+        if new_df.loc[i,0] < 0:
+            new_df.loc[i,0] = new_df.loc[i,0] + 2
         
     new_df.loc[:,2] = new_df.loc[:,2].astype(float)
     
     sort_df = pd.DataFrame(new_df).sort_values(0, axis=0)
         
-    yl = sort_df.loc[:,2].values
-    yhat = smooth.savitzky_golay(yl, 51, 7)
+    yhat = sort_df.loc[:,2].values
+    #yhat = smooth.savitzky_golay(yl, 51, 7)
     
     
     #x, y, status = _math.normalize(sort_df.loc[:,2], sort_df.loc[:,4])
@@ -275,10 +302,20 @@ for filename in glob.glob(os.path.join(path, extension)):
             ax.set_title('CG-Cas-Cepheid')
         elif starType == 'RWPhe':
             ax.set_title('RW-Phe-Eclipsing Binary')
+        elif starType == 'V0748Cep':
+            ax.set_title('V0748-Cep-Eclipsing Binary')
+        elif starType == 'ZLep':
+            ax.set_title('Z-Lep-Eclipsing Binary')
+        elif starType == 'MNCam':
+            ax.set_title('MN-Cam-Cepheid')
+        elif starType == 'HWPup':
+            ax.set_title('HW-Pup-Cepheid')
+        else:
+            ax.set_title(' ')
         # xnumpy = xnumpy / 10
         # ax.scatter(xnumpy, ynumpy)
         # ax.plot(sort_df.loc[:,2], sort_df.loc[:,4], 'o')
-        ax.scatter(sort_df.loc[:,0], yhat)        
+        ax.scatter(sort_df.loc[:,0], yhat, marker='.')        
         # Set the path to save the plot and save it
         plot_path = path + '/' + os.path.basename(filename) + '_plot.png'
         fig.savefig(plot_path)
@@ -319,7 +356,9 @@ for filename in glob.glob(os.path.join(path, extension)):
     x, y, status = _math.normalize(sort_df.loc[:,0], yhat)
     
     wav_name = path + '/' + os.path.basename(filename) + '_sound.wav'
+    mp3_name = path + '/' + os.path.basename(filename) + '_sound.mp3'
     _simplesound.save_sound(wav_name, x, y)
+    wav_to_mp3(wav_name, mp3_name)
     now = datetime.datetime.now()
     print(now.strftime('%Y-%m-%d_%H-%M-%S'))
     i = i + 1
