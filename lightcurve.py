@@ -210,17 +210,24 @@ for filename in glob.glob(os.path.join(path, extension)):
     if data.shape[1]<2:
         print("Error reading file, only detect one column.")
         exit()
-    data = data.iloc[1:, :]
+
+    groups = data.groupby(1)
+    be_data = groups.get_group('be').reset_index()
+    bf_data = groups.get_group('bf').reset_index()
+
+    be_data = be_data.iloc[1:, :]
+    bf_data = bf_data.iloc[1:, :]
     # x = data.loc[1:, 2]
     # xnumpy = x.values.astype(np.float64)
     # y = data.loc[1:, 4]
     # ynumpy = y.values.astype(np.float64)
     
     #Select columns to order next
-    selected_columns = data[[0,2]]
-    new_df = selected_columns.copy()
+    be_selected_columns = be_data[[0,2]]
+    be_new_df = be_selected_columns.copy()
+    bf_selected_columns = bf_data[[0,2]]
+    bf_new_df = bf_selected_columns.copy()
     # sort_df = pd.DataFrame(new_df).sort_values(2, axis=0)
-    
     
     # x = sort_df[:,0].astype(np.float64)
     # y = sort_df[:,1].astype(np.float64)
@@ -252,37 +259,46 @@ for filename in glob.glob(os.path.join(path, extension)):
 
     #starType = 'ZLep'
     if starType == 'CGCas':
-        new_df.loc[:,0] = (new_df.loc[:,0].astype(float) - t0_CGCas) / periodo_CGCas
-        new_df.loc[:,0] = (new_df.loc[:,0] - new_df.loc[:,0].astype(float).astype(int)) + 0.79
+        be_new_df.loc[:,0] = (be_new_df.loc[:,0].astype(float) - t0_CGCas) / periodo_CGCas
+        be_new_df.loc[:,0] = (be_new_df.loc[:,0] - be_new_df.loc[:,0].astype(float).astype(int)) + 0.79
     elif starType == 'RWPhe':
-        new_df.loc[:,0] = (new_df.loc[:,0].astype(float) - t0_RWPhe) / periodo_RWPhe
-        new_df.loc[:,0] = (new_df.loc[:,0] - new_df.loc[:,0].astype(float).astype(int)) + 0.55
+        be_new_df.loc[:,0] = (be_new_df.loc[:,0].astype(float) - t0_RWPhe) / periodo_RWPhe
+        be_new_df.loc[:,0] = (be_new_df.loc[:,0] - be_new_df.loc[:,0].astype(float).astype(int)) + 0.55
+        bf_new_df.loc[:,0] = (bf_new_df.loc[:,0].astype(float) - t0_RWPhe) / periodo_RWPhe
+        bf_new_df.loc[:,0] = (bf_new_df.loc[:,0] - bf_new_df.loc[:,0].astype(float).astype(int)) + 0.55
     elif starType == 'V0748Cep':
-        new_df.loc[:,0] = (new_df.loc[:,0].astype(float) - t0_V0748Cep) / periodo_V0748Cep
-        new_df.loc[:,0] = (new_df.loc[:,0] - new_df.loc[:,0].astype(float).astype(int)) + 0.45
+        be_new_df.loc[:,0] = (be_new_df.loc[:,0].astype(float) - t0_V0748Cep) / periodo_V0748Cep
+        be_new_df.loc[:,0] = (be_new_df.loc[:,0] - be_new_df.loc[:,0].astype(float).astype(int)) + 0.45
     elif starType == 'ZLep':
-        new_df.loc[:,0] = (new_df.loc[:,0].astype(float) - t0_ZLep) / periodo_ZLep
-        new_df.loc[:,0] = (new_df.loc[:,0] - new_df.loc[:,0].astype(float).astype(int))
+        be_new_df.loc[:,0] = (be_new_df.loc[:,0].astype(float) - t0_ZLep) / periodo_ZLep
+        be_new_df.loc[:,0] = (be_new_df.loc[:,0] - be_new_df.loc[:,0].astype(float).astype(int))
     elif starType == 'MNCam':
-        new_df.loc[:,0] = (new_df.loc[:,0].astype(float) - t0_MNCam) / periodo_MNCam
-        new_df.loc[:,0] = (new_df.loc[:,0] - new_df.loc[:,0].astype(float).astype(int)) + 0.45
+        be_new_df.loc[:,0] = (be_new_df.loc[:,0].astype(float) - t0_MNCam) / periodo_MNCam
+        be_new_df.loc[:,0] = (be_new_df.loc[:,0] - be_new_df.loc[:,0].astype(float).astype(int)) + 0.45
     elif starType == 'HWPup':
-        new_df.loc[:,0] = (new_df.loc[:,0].astype(float) - t0_HWPup) / periodo_HWPup
-        new_df.loc[:,0] = (new_df.loc[:,0] - new_df.loc[:,0].astype(float).astype(int)) + 0.10
+        be_new_df.loc[:,0] = (be_new_df.loc[:,0].astype(float) - t0_HWPup) / periodo_HWPup
+        be_new_df.loc[:,0] = (be_new_df.loc[:,0] - be_new_df.loc[:,0].astype(float).astype(int)) + 0.10
     else:
         print('Error en el tipo de estrella.')
 
-    for i in range (1,(len(new_df.loc[:,0])+1)):
-        if new_df.loc[i,0] < 0:
-            new_df.loc[i,0] = new_df.loc[i,0] + 2
+    for i in range (1,(len(be_new_df.loc[:,0])+1)):
+        if be_new_df.loc[i,0] < 0:
+            be_new_df.loc[i,0] = be_new_df.loc[i,0] + 2
+    for i in range (1,(len(bf_new_df.loc[:,0])+1)):
+        if bf_new_df.loc[i,0] < 0:
+            bf_new_df.loc[i,0] = bf_new_df.loc[i,0] + 2
         
-    new_df.loc[:,2] = new_df.loc[:,2].astype(float)
+    be_new_df.loc[:,2] = be_new_df.loc[:,2].astype(float)
+    bf_new_df.loc[:,2] = bf_new_df.loc[:,2].astype(float)
     
-    sort_df = pd.DataFrame(new_df).sort_values(0, axis=0)
+    be_sort_df = pd.DataFrame(be_new_df).sort_values(0, axis=0)
+    bf_sort_df = pd.DataFrame(bf_new_df).sort_values(0, axis=0)
         
-    yhat = sort_df.loc[:,2].values
+    print(be_sort_df)
+
+    be_yhat = be_sort_df.loc[:,2].values
+    bf_yhat = bf_sort_df.loc[:,2].values
     #yhat = smooth.savitzky_golay(yl, 51, 7)
-    
     
     #x, y, status = _math.normalize(sort_df.loc[:,2], sort_df.loc[:,4])
     #x, y, status = _math.normalize(sort_df.loc[:,2], yhat)
@@ -291,9 +307,7 @@ for filename in glob.glob(os.path.join(path, extension)):
         # Erase the plot
         ax.cla()
         # First file of the column is setted as axis name
-        x_name = str(data.iloc[0,0])
         ax.set_xlabel('Phase')
-        y_name = str(data.iloc[0,0])
         ax.set_ylabel('Mag')
         ax.invert_yaxis()
         # Separate the name file from the path to set the plot title
@@ -315,32 +329,35 @@ for filename in glob.glob(os.path.join(path, extension)):
         # xnumpy = xnumpy / 10
         # ax.scatter(xnumpy, ynumpy)
         # ax.plot(sort_df.loc[:,2], sort_df.loc[:,4], 'o')
-        ax.scatter(sort_df.loc[:,0], yhat, marker='.')        
+        ax.scatter(be_sort_df.loc[:,0], be_yhat, marker='.', c='k', label='be')
+        ax.scatter(bf_sort_df.loc[:,0], bf_yhat, marker='.', c='g', label='bf')    
+
+        ax.legend()    
         # Set the path to save the plot and save it
         plot_path = path + '/' + os.path.basename(filename) + '_plot.png'
         fig.savefig(plot_path)
 
         # Generate the dataFrame to plot with braille
-        data_float = sort_df.loc[:, 0].to_frame()
-        df = pd.DataFrame(yhat)
-        data_float = data_float.join(df, rsuffix='1')
-        plot_braille_path = path + '/' + os.path.basename(filename) + '_plot-braille.png'
-        generate_braille_plot(sort_df.loc[:,0], yhat, plot_braille_path)
+        #data_float = sort_df.loc[:, 0].to_frame()
+        #df = pd.DataFrame(yhat)
+        #data_float = data_float.join(df, rsuffix='1')
+        #plot_braille_path = path + '/' + os.path.basename(filename) + '_plot-braille.png'
+        #generate_braille_plot(sort_df.loc[:,0], yhat, plot_braille_path)
         
         #Tratando de invertir valores
-        linea_media = (np.nanmax(yhat) - np.nanmin(yhat))/2 + np.nanmin(yhat)
+        #linea_media = (np.nanmax(yhat) - np.nanmin(yhat))/2 + np.nanmin(yhat)
         
-        ax.axhline(y = linea_media, xmin = 0, xmax = 2)
+        #ax.axhline(y = linea_media, xmin = 0, xmax = 2)
         
-        cont = 0
-        for i in yhat:
-            if i > linea_media:
-                yhat[cont] = linea_media - (i - linea_media)
-            if i == linea_media:
-                yhat[cont] = i
-            if i < linea_media:
-                yhat[cont] = linea_media + (linea_media - i)
-            cont = cont + 1
+        #cont = 0
+        #for i in yhat:
+        #    if i > linea_media:
+        #        yhat[cont] = linea_media - (i - linea_media)
+        #    if i == linea_media:
+        #        yhat[cont] = i
+        #    if i < linea_media:
+        #        yhat[cont] = linea_media + (linea_media - i)
+        #    cont = cont + 1
         
         #ax.scatter(sort_df.loc[:,0], yhat)
         
@@ -353,12 +370,12 @@ for filename in glob.glob(os.path.join(path, extension)):
         
     # Save the sound
     
-    x, y, status = _math.normalize(sort_df.loc[:,0], yhat)
+    #x, y, status = _math.normalize(sort_df.loc[:,0], yhat)
     
-    wav_name = path + '/' + os.path.basename(filename) + '_sound.wav'
-    mp3_name = path + '/' + os.path.basename(filename) + '_sound.mp3'
-    _simplesound.save_sound(wav_name, x, y)
-    wav_to_mp3(wav_name, mp3_name)
+    #wav_name = path + '/' + os.path.basename(filename) + '_sound.wav'
+    #mp3_name = path + '/' + os.path.basename(filename) + '_sound.mp3'
+    #_simplesound.save_sound(wav_name, x, y)
+    #wav_to_mp3(wav_name, mp3_name)
     now = datetime.datetime.now()
     print(now.strftime('%Y-%m-%d_%H-%M-%S'))
     i = i + 1
