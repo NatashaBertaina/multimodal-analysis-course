@@ -24,7 +24,7 @@ if starType == 'CGCas':
     """https://asas-sn.osu.edu/variables/753bdd73-38a7-5e43-b6c0-063292c7f28d"""
     periodo = 4.3652815
     t0 = 2457412.70647
-    BPRP = 1.719
+    BPRP = 0.719
 elif starType == 'RWPhe':
     """https://asas-sn.osu.edu/variables/dfa51488-c6b7-5a03-abd4-df3c28273250"""
     periodo = 5.4134367
@@ -76,12 +76,10 @@ for i in toplot['hjd']:
     toplot.loc[count, 'flux_err'] = toplot.loc[count-toplotlength, 'flux_err']
     count = count + 1
 
-print(toplot)
-
 groups = toplot.groupby('camera')
 if starType == 'CGCas':
-    be_toplot = groups.get_group('bd')
-    bf_toplot = groups.get_group('bc') 
+    bd_toplot = groups.get_group('bd')
+    bc_toplot = groups.get_group('bc') 
 elif starType == 'RWPhe':
     be_toplot = groups.get_group('be')
     bf_toplot = groups.get_group('bf') 
@@ -96,8 +94,14 @@ ax.set_ylabel('Mag')
 ax.invert_yaxis()
 if starType == 'CGCas':
     ax.set_title('CG-Cas-Cepheid')
+    ax.scatter(bd_toplot['hjd'], bd_toplot['mag'], marker='.', c='#CF3476', label='bd')
+    ax.scatter(bc_toplot['hjd'], bc_toplot['mag'], marker='.', c='#E59866', label='bc')
+    plot_path = 'data/galaxy-stars/light-curves/Cefeida/CGCas/cepheid_sonouno.png'
 elif starType == 'RWPhe':
     ax.set_title('RW-Phe-Eclipsing Binary')
+    ax.scatter(be_toplot['hjd'], be_toplot['mag'], marker='.', c='k', label='be')
+    ax.scatter(bf_toplot['hjd'], bf_toplot['mag'], marker='.', c='g', label='bf')
+    plot_path = 'data/galaxy-stars/light-curves/BEclipsante/RWPhe/eclipsante_sonouno.png'
 elif starType == 'V0748Cep':
     ax.set_title('V0748-Cep-Eclipsing Binary')
 elif starType == 'ZLep':
@@ -109,10 +113,6 @@ elif starType == 'HWPup':
 else:
     ax.set_title(' ')
 
-ax.scatter(be_toplot['hjd'], be_toplot['mag'], marker='.', c='k', label='be')
-ax.scatter(bf_toplot['hjd'], bf_toplot['mag'], marker='.', c='g', label='bf')    
-
 ax.legend()    
-# Set the path to save the plot and save it
-plot_path = 'galaxy-stars/light-curves/BEclipsante/RWPhe/plot.png'
+# Save the plot
 fig.savefig(plot_path)
