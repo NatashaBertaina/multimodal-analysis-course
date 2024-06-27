@@ -248,7 +248,7 @@ class simpleSound(object):
         #Se instancia la clase que se genera el sonido usando PyGame.
         self.reproductor = reproductorRaw()
     #Éste método modifica el valor para producir la nota y lo envía a la clase reproductorMidi
-    def make_sound(self, data, x):
+    def make_sound(self, data, x=0):
         try:
             if not (x == -1):
                 #Aquí se llama al método que genera y envía la nota a fluidsynth
@@ -262,6 +262,24 @@ class simpleSound(object):
         #En un futuro se puede pedir confirmación al método pitch y devolverla.
     #Aquí se genera el archivo de salida con el sonido, por el momento no depende del tempo seleccionado.
 
+    def invert_values_to_sound(self, data_y):
+        try:
+            #Inversión de valores de y
+            y = data_y.copy()
+            linea_media = (np.nanmax(y) - np.nanmin(y))/2 + np.nanmin(y)
+            cont = 0
+            for i in y:
+                if i > linea_media:
+                    y[cont] = linea_media - (i - linea_media)
+                if i == linea_media:
+                    y[cont] = i
+                if i < linea_media:
+                    y[cont] = linea_media + (linea_media - i)
+                cont = cont + 1
+            return y
+        except Exception as e:
+            self.expErrSs.writeexception(e)
+
     def save_sound(self, path, data_x, data_y, init=0):
         #Se genera un objeto Track
         # try:
@@ -274,7 +292,7 @@ class simpleSound(object):
             #rango, offset = self.reproductor.getRange()
             rep = self.reproductor
             sound_buffer=b''
-            """for x in range (init, data_x.size):
+            for x in range (init, data_x.size):
                 #print('en el for inicio')
                 #print(data_y[x])
                 freq = rep.max_freq*data_y[x]+self.reproductor.min_freq
@@ -286,9 +304,9 @@ class simpleSound(object):
                 s = pygame.mixer.Sound(f.astype('int16'))
                 sound_buffer += s.get_raw()
                 #localTrack.add_notes(Note(int((dataY[x]*rango)+offset)))
-                #print('en el for final')"""
+                #print('en el for final')
             
-            for data in data_y:
+            """for data in data_y:
                 #print('en el for inicio')
                 #print(data_y[x])
                 freq = rep.max_freq*data+self.reproductor.min_freq
@@ -300,7 +318,46 @@ class simpleSound(object):
                 s = pygame.mixer.Sound(f.astype('int16'))
                 sound_buffer += s.get_raw()
                 #localTrack.add_notes(Note(int((dataY[x]*rango)+offset)))
-                #print('en el for final')
+                #print('en el for final')"""
+
+            with wave.open(path,'wb') as output_file:
+                output_file.setframerate(rep.f_s)
+                output_file.setnchannels(1)
+                output_file.setsampwidth(2)
+                output_file.writeframesraw(sound_buffer)
+                #output_file.close()
+
+        except Exception as e:
+            self.expErrSs.writeexception(e)
+        #Finalmente se guarda el la ruta seleccionada.
+        # try:
+        #     #MidiFileOut.write_Track(path, localTrack)
+        #     #TODO: Escribir archivo de salida (wav?)
+        #     self.expErrSs.writeinfo("Metodo no implementado")
+        # except Exception as e:
+        #     self.expErrSs.writeexception(e)
+
+    def save_invert_freq_sound(self, path, data_x, data_y, init=0):
+        #Se genera un objeto Track
+        # try:
+        #     output_file = wave.open(path,'w')
+
+        # except Exception as e:
+        #     self.expErrSs.writeexception(e)
+        #Se recorre el array agregando las notas al Track.
+        y = self.invert_values_to_sound(data_y)
+        try:
+            #rango, offset = self.reproductor.getRange()
+            rep = self.reproductor
+            sound_buffer=b''
+
+            for x in range (init, data_x.size):
+                freq = rep.max_freq*y[x]+self.reproductor.min_freq
+                self.env = rep._adsr_envelope()
+                f = self.env*rep.volume*2**15*rep.generate_waveform(freq,
+                    delta_t = 1)
+                s = pygame.mixer.Sound(f.astype('int16'))
+                sound_buffer += s.get_raw()
 
             with wave.open(path,'wb') as output_file:
                 output_file.setframerate(rep.f_s)

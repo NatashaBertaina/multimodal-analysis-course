@@ -105,60 +105,52 @@ ax = plt.axes()
 ax.set_xlabel('Phase')
 ax.set_ylabel('Mag')
 ax.invert_yaxis()
+rep = False
+
+def reproduction(camera1, camera2, camera1text, camera2text, wav_path):
+    alldata = pd.concat([camera1, camera2])
+    alldata = alldata.sort_values('hjd')
+    x_norm, y_norm, status = _math.normalize(alldata['hjd'], alldata['mag'])
+    y_norm = y_norm.reset_index()
+
+    if rep:
+        ordenada = np.array([alldata['mag'].min(), alldata['mag'].max()])
+        count = 0
+        value = _simplesound.invert_values_to_sound(y_norm['mag'])
+        for index, row in alldata.iterrows():
+            abscisa = np.array([row['hjd'], row['hjd']])
+            red_line = ax.plot(abscisa, ordenada, 'r')
+            plt.pause(0.05)
+            # Make the sound
+            if row['camera'] == camera1text:
+                _simplesound.reproductor.set_waveform('sine')
+                _simplesound.make_sound(value[count])
+            elif row['camera'] == camera2text:
+                _simplesound.reproductor.set_waveform('sine')
+                _simplesound.make_sound(value[count])
+            else:
+                print('Error en la cámara')
+            count = count + 1
+            line = red_line.pop(0)
+            line.remove()
+    _simplesound.save_invert_freq_sound(wav_path, alldata['hjd'], y_norm['mag'])
+
 if starType == 'CGCas':
     ax.set_title('CG-Cas-Cepheid')
     ax.scatter(bd_toplot['hjd'], bd_toplot['mag'], marker='.', c='#CF3476', label='bd')
     ax.scatter(bc_toplot['hjd'], bc_toplot['mag'], marker='.', c='#E59866', label='bc')
     plot_path = 'data/galaxy-stars/light-curves/Cefeida/CGCas/cepheid_sonouno.png'
-
-    bd_toplot = pd.DataFrame(bd_toplot).sort_values(0, axis=0)
-    bc_toplot = pd.DataFrame(bc_toplot).sort_values(0, axis=0)
-
-    print(bd_toplot)
-
-    x_bd, y_bd, status = _math.normalize(bd_toplot['hjd'], bd_toplot['mag'])
-    x_bc, y_bc, status = _math.normalize(bc_toplot['hjd'], bc_toplot['mag'])
-
-    ordenada = np.array([bd_toplot['mag'].min(), bd_toplot['mag'].max()])
-    """for x in range (0, bd_toplot['hjd'].size+bc_toplot['hjd'].size):
-        # Plot the position line
-        if not x == 0:
-            line = red_line.pop(0)
-            line.remove()
-        status = True
-        #abscisa = np.array([float(data_float1.loc[x,0]), float(data_float1.loc[x,0])])
-        try:
-            status = False
-            abscisa = np.array([bd_toplot['hjd'][x], bd_toplot['hjd'][x]])
-            red_line = ax.plot(abscisa, ordenada, 'r')
-            plt.pause(0.05)
-            # Make the sound
-            _simplesound.reproductor.set_waveform('sine')
-            _simplesound.make_sound(y_bd[x], 1)
-        except Exception as e:
-            #print(e)
-            pass
-        try:
-            status = False
-            abscisa = np.array([bc_toplot['hjd'][x], bc_toplot['hjd'][x]])
-            red_line = ax.plot(abscisa, ordenada, 'r')
-            plt.pause(0.05)
-            # Make the sound
-            _simplesound.reproductor.set_waveform('flute')
-            _simplesound.make_sound(y_bc[x], 1)
-        except Exception as e:
-            #print(e)
-            pass
-        if status:
-            print('no entró a ningún try')"""
-
-    #wav_path = 'data/galaxy-stars/light-curves/Cefeida/CGCas/cepheid_sonouno.wav'
-    #_simplesound.save_sound(wav_path, x_bd, y_bd)
+    wav_path = 'data/galaxy-stars/light-curves/Cefeida/CGCas/cepheid_sonouno.wav'
+    reproduction(bd_toplot, bc_toplot, 'bd', 'bc', wav_path)
+    
 elif starType == 'RWPhe':
     ax.set_title('RW-Phe-Eclipsing Binary')
     ax.scatter(be_toplot['hjd'], be_toplot['mag'], marker='.', c='k', label='be')
     ax.scatter(bf_toplot['hjd'], bf_toplot['mag'], marker='.', c='g', label='bf')
     plot_path = 'data/galaxy-stars/light-curves/BEclipsante/RWPhe/eclipsante_sonouno.png'
+    wav_path = 'data/galaxy-stars/light-curves/BEclipsante/RWPhe/eclipsante_sonouno.wav'
+    reproduction(be_toplot, bf_toplot, 'be', 'bf', wav_path)
+
 elif starType == 'V0748Cep':
     ax.set_title('V0748-Cep-Eclipsing Binary')
 elif starType == 'ZLep':
@@ -174,7 +166,8 @@ ax.legend()
 # Save the plot
 fig.savefig(plot_path)
 
-plt.pause(0.5)
-# Showing the above plot
-plt.show()
-plt.close()
+if rep:
+    plt.pause(0.5)
+    # Showing the above plot
+    plt.show()
+    plt.close()
