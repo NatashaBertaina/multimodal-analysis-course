@@ -274,8 +274,11 @@ class simpleSound(object):
             #rango, offset = self.reproductor.getRange()
             rep = self.reproductor
             sound_buffer=b''
-            for x in range (init, data_x.size):
+            """for x in range (init, data_x.size):
+                #print('en el for inicio')
+                #print(data_y[x])
                 freq = rep.max_freq*data_y[x]+self.reproductor.min_freq
+                #print('en el for aqui')
                 self.env = rep._adsr_envelope()
                 #print(self.env.get_adsr())
                 f = self.env*rep.volume*2**15*rep.generate_waveform(freq,
@@ -283,6 +286,21 @@ class simpleSound(object):
                 s = pygame.mixer.Sound(f.astype('int16'))
                 sound_buffer += s.get_raw()
                 #localTrack.add_notes(Note(int((dataY[x]*rango)+offset)))
+                #print('en el for final')"""
+            
+            for data in data_y:
+                #print('en el for inicio')
+                #print(data_y[x])
+                freq = rep.max_freq*data+self.reproductor.min_freq
+                #print('en el for aqui')
+                self.env = rep._adsr_envelope()
+                #print(self.env.get_adsr())
+                f = self.env*rep.volume*2**15*rep.generate_waveform(freq,
+                    delta_t = 1)
+                s = pygame.mixer.Sound(f.astype('int16'))
+                sound_buffer += s.get_raw()
+                #localTrack.add_notes(Note(int((dataY[x]*rango)+offset)))
+                #print('en el for final')
 
             with wave.open(path,'wb') as output_file:
                 output_file.setframerate(rep.f_s)

@@ -3,6 +3,19 @@ import argparse
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
+import numpy as np
+from data_transform.predef_math_functions import PredefMathFunctions
+from sound_module.simple_sound import simpleSound
+
+# Instanciate the sonoUno clases needed
+_simplesound = simpleSound()
+_math = PredefMathFunctions()
+# Sound configurations, predefined at the moment
+_simplesound.reproductor.set_continuous()
+_simplesound.reproductor.set_waveform('sine')  # piano; sine
+_simplesound.reproductor.set_time_base(0.03)
+_simplesound.reproductor.set_min_freq(380)
+_simplesound.reproductor.set_max_freq(800)
 
 parser = argparse.ArgumentParser()
 # Receive the directory path from the arguments
@@ -97,6 +110,50 @@ if starType == 'CGCas':
     ax.scatter(bd_toplot['hjd'], bd_toplot['mag'], marker='.', c='#CF3476', label='bd')
     ax.scatter(bc_toplot['hjd'], bc_toplot['mag'], marker='.', c='#E59866', label='bc')
     plot_path = 'data/galaxy-stars/light-curves/Cefeida/CGCas/cepheid_sonouno.png'
+
+    bd_toplot = pd.DataFrame(bd_toplot).sort_values(0, axis=0)
+    bc_toplot = pd.DataFrame(bc_toplot).sort_values(0, axis=0)
+
+    print(bd_toplot)
+
+    x_bd, y_bd, status = _math.normalize(bd_toplot['hjd'], bd_toplot['mag'])
+    x_bc, y_bc, status = _math.normalize(bc_toplot['hjd'], bc_toplot['mag'])
+
+    ordenada = np.array([bd_toplot['mag'].min(), bd_toplot['mag'].max()])
+    """for x in range (0, bd_toplot['hjd'].size+bc_toplot['hjd'].size):
+        # Plot the position line
+        if not x == 0:
+            line = red_line.pop(0)
+            line.remove()
+        status = True
+        #abscisa = np.array([float(data_float1.loc[x,0]), float(data_float1.loc[x,0])])
+        try:
+            status = False
+            abscisa = np.array([bd_toplot['hjd'][x], bd_toplot['hjd'][x]])
+            red_line = ax.plot(abscisa, ordenada, 'r')
+            plt.pause(0.05)
+            # Make the sound
+            _simplesound.reproductor.set_waveform('sine')
+            _simplesound.make_sound(y_bd[x], 1)
+        except Exception as e:
+            #print(e)
+            pass
+        try:
+            status = False
+            abscisa = np.array([bc_toplot['hjd'][x], bc_toplot['hjd'][x]])
+            red_line = ax.plot(abscisa, ordenada, 'r')
+            plt.pause(0.05)
+            # Make the sound
+            _simplesound.reproductor.set_waveform('flute')
+            _simplesound.make_sound(y_bc[x], 1)
+        except Exception as e:
+            #print(e)
+            pass
+        if status:
+            print('no entró a ningún try')"""
+
+    #wav_path = 'data/galaxy-stars/light-curves/Cefeida/CGCas/cepheid_sonouno.wav'
+    #_simplesound.save_sound(wav_path, x_bd, y_bd)
 elif starType == 'RWPhe':
     ax.set_title('RW-Phe-Eclipsing Binary')
     ax.scatter(be_toplot['hjd'], be_toplot['mag'], marker='.', c='k', label='be')
@@ -116,3 +173,8 @@ else:
 ax.legend()    
 # Save the plot
 fig.savefig(plot_path)
+
+plt.pause(0.5)
+# Showing the above plot
+plt.show()
+plt.close()
