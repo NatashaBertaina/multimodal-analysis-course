@@ -1,15 +1,20 @@
+"""
+Created on 2022
+
+@author: sonounoteam (view licence)
+"""
+# General imports
 import pandas as pd
 import argparse
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import numpy as np
-from data_transform.predef_math_functions import PredefMathFunctions
+# Local imports
+from data_transform import predef_math_functions as _math
 from sound_module.simple_sound import simpleSound
-
 # Instanciate the sonoUno clases needed
 _simplesound = simpleSound()
-_math = PredefMathFunctions()
 # Sound configurations, predefined at the moment
 _simplesound.reproductor.set_continuous()
 _simplesound.reproductor.set_waveform('sine')  # piano; sine
@@ -105,12 +110,12 @@ ax = plt.axes()
 ax.set_xlabel('Phase')
 ax.set_ylabel('Mag')
 ax.invert_yaxis()
-rep = False
+rep = True
 
 def reproduction(camera1, camera2, camera1text, camera2text, wav_path):
     alldata = pd.concat([camera1, camera2])
     alldata = alldata.sort_values('hjd')
-    x_norm, y_norm, status = _math.normalize(alldata['hjd'], alldata['mag'])
+    x_norm, y_norm, status, Error = _math.normalize(alldata['hjd'], alldata['mag'])
     y_norm = y_norm.reset_index()
 
     if rep:
@@ -126,7 +131,7 @@ def reproduction(camera1, camera2, camera1text, camera2text, wav_path):
                 _simplesound.reproductor.set_waveform('sine')
                 _simplesound.make_sound(value[count])
             elif row['camera'] == camera2text:
-                _simplesound.reproductor.set_waveform('sine')
+                _simplesound.reproductor.set_waveform('square')
                 _simplesound.make_sound(value[count])
             else:
                 print('Error en la cámara')
