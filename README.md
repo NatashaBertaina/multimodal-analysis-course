@@ -1,4 +1,4 @@
-# Multimodal script for course 
+# Multimodal script for tools used on a course 
 
 This development is powered by CONICET-Argentina, Universidad de Mendoza-Argentina and Universidad Tecnológica Nacional - Facultad Regional Mendoza.
 
@@ -6,13 +6,13 @@ This development is powered by CONICET-Argentina, Universidad de Mendoza-Argenti
 
 # Description
 
-This repository hosts the scripts used for data sonorization using the sonoUno tool and its associated libraries. It includes a set of scripts that allow scientific data to be transformed into accessible sound and visual representations.
+This repository hosts the scripts used for data sonification using the sonoUno libraries. It includes a set of scripts that allow scientific data to be transformed into accessible sound and visual representations using labels in braille.
 
 # Main Features
 
 ### 1. Sonification with Noise:
-   - The `sound_noise.py` cript enables the sonification of tabulated data in two columns, with the option to introduce controlled noise adjusted to a specific signal-to-noise ratio.
-   - It includes the integration of the `pybrl` library, which automatically translates visual information (axis labels, graduations, and other elements) into Braille, ensuring the accessibility of generated graphs, which can also be 3D printed.
+   - The `sound_noise.py` script enables the sonification of tabulated data in two columns, with the option to introduce controlled noise adjusted to a specific signal-to-noise ratio.
+   - It includes the integration of the `pybrl` library, which is used to translates visual texts (axis labels, graduations, and other elements) into Braille, ensuring the accessibility of generated graphs, which can also be 3D printed.
 
 ### 2. Sonification  of Star Spectra:
    - The `starts.py` script is designed for the sonification of star spectra, facilitating the analysis and multisensory representation of this type of scientific data.
