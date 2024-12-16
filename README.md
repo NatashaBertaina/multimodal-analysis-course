@@ -14,11 +14,11 @@ This repository hosts the scripts used for data sonorization using the sonoUno t
    - The `sound_noise.py` cript enables the sonification of tabulated data in two columns, with the option to introduce controlled noise adjusted to a specific signal-to-noise ratio.
    - It includes the integration of the `pybrl` library, which automatically translates visual information (axis labels, graduations, and other elements) into Braille, ensuring the accessibility of generated graphs, which can also be 3D printed.
 
-### 2. Sonorización de espectros estrellas:
+### 2. Sonification  of Star Spectra:
    - The `starts.py` script is designed for the sonification of star spectra, facilitating the analysis and multisensory representation of this type of scientific data.
    - It includes the integration of the `pybrl` library, which automatically translates visual information (axis labels, graduations, and other elements) into Braille, ensuring the accessibility of generated graphs, which can also be 3D printed.
 
-### 3. Sonorización de curvas de luz:
+### 3. Sonification  of Ligth Curves:
    - The `lightcurve.py` script allows the sonification of light curves.
    - It includes the integration of the `pybrl` library, which automatically translates visual information (axis labels, graduations, and other elements) into Braille, ensuring the accessibility of generated graphs, which can also be 3D printed.
 
