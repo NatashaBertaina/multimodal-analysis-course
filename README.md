@@ -18,7 +18,7 @@ This repository hosts the scripts used for data sonorization using the sonoUno t
    - The `starts.py` script is designed for the sonification of star spectra, facilitating the analysis and multisensory representation of this type of scientific data.
    - It includes the integration of the `pybrl` library, which automatically translates visual information (axis labels, graduations, and other elements) into Braille, ensuring the accessibility of generated graphs, which can also be 3D printed.
 
-### 3. Sonification  of Ligth Curves:
+### 3. Sonification  of Light Curves:
    - The `lightcurve.py` script allows the sonification of light curves.
    - It includes the integration of the `pybrl` library, which automatically translates visual information (axis labels, graduations, and other elements) into Braille, ensuring the accessibility of generated graphs, which can also be 3D printed.
 
